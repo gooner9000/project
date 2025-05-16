@@ -32,9 +32,26 @@ class Slime:
         return locationX,locationY
 
     def move(self):
-        moving = False
-        while not moving
-            posX,posY = self.selectlocation()
+        posX,posY = self.selectlocation()
+        equation = self.get_line_to(posX,posY)
+        print(equation)
+
+        #while self.cx != posX and self.cy != posY:
+        self.cx += self.speed
+        self.cy += equation[0]*self.cx+equation[1]
+
+
+    def slope(self, PposX, PposY):
+        if PposX == self.cx:
+            return 0
+        else:
+            m = (PposY - self.cy) / (PposX - self.cx)
+            return m
+
+    def get_line_to(self, PposX, PposY):
+        c = -(self.slope(PposX,PposY) * self.cx - self.cy)
+        return  self.slope(PposX,PposY), c
+
 
 
 
@@ -48,7 +65,7 @@ running = True
 start_size = 50
 
 #create slimes at start
-my_slime = Slime(10,
+my_slime = Slime(0.1,
                  10,
                  "red",
                  start_size,
@@ -72,6 +89,7 @@ while running:
 
     #Slime actions
     my_slime.create()
+    my_slime.move()
 
 
 
