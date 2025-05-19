@@ -3,7 +3,12 @@
 #imports
 import random
 import pygame
-
+import math
+pygame.init()
+#set screen size
+screen_width = 1360
+screen_height = 980
+screen = pygame.display.set_mode((screen_width, screen_height))
 #objects
 class Slime:
     def __init__(self,
@@ -21,36 +26,49 @@ class Slime:
         self.agression = agression
         self.cx = cx
         self.cy = cy
+        self.posX,self.posY = self.selectlocation()
+
+
     #function to create slimes at start
     def create(self):
         pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
 
     def selectlocation(self):
-        locationX = random.randint(0,1360)
-        locationY = random.randint(0,980)
+        locationX = random.randint(self.size,screen_width-self.size)
+        locationY = random.randint(self.size,screen_height-self.size)
 
         return locationX,locationY
 
     def move(self):
-        posX,posY = self.selectlocation()
-        equation = self.get_line_to(posX,posY)
-        print(equation)
-
-        #while self.cx != posX and self.cy != posY:
-        self.cx += self.speed
-        self.cy += equation[0]*self.cx+equation[1]
 
 
-    def slope(self, PposX, PposY):
-        if PposX == self.cx:
-            return 0
+        #calculate distance
+        dx = self.posX - self.cx
+        dy = self.posY - self.cy
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+
+        # If closer than one step, snap to target and pick new
+        if distance < self.speed:
+            wait = True
+            while wait == True:
+                for i in range(0,random.randint(100000,100000)):
+                    wait = False
+            self.cx = self.posX
+            self.cy = self.posY
+            self.posX,self.posY = self.selectlocation()
+
         else:
-            m = (PposY - self.cy) / (PposX - self.cx)
-            return m
+            #move the circle
+            if distance != 0:
+                move_x = (dx / distance) * self.speed
+                move_y = (dy / distance) * self.speed
 
-    def get_line_to(self, PposX, PposY):
-        c = -(self.slope(PposX,PposY) * self.cx - self.cy)
-        return  self.slope(PposX,PposY), c
+                self.cx += move_x
+                self.cy += move_y
+
+
+
+
 
 
 
@@ -58,14 +76,16 @@ class Slime:
 
 
 #set screen size
-screen = pygame.display.set_mode((1360, 980))
+
 running = True
+#control framerate
+clock = pygame.time.Clock()
 
 #set start attributes
-start_size = 50
+start_size = 15
 
 #create slimes at start
-my_slime = Slime(0.1,
+my_slime = Slime(10,
                  10,
                  "red",
                  start_size,
@@ -75,22 +95,27 @@ my_slime = Slime(0.1,
 
 
 #while the program is playing
+
 while running:
-
-    #user inputs
+    # Event handling
     for event in pygame.event.get():
-
-        #check if user quits the program
         if event.type == pygame.QUIT:
             running = False
 
-    #fill screen colour
-    screen.fill((0, 0, 0))
-
-    #Slime actions
-    my_slime.create()
+    # Update game state
     my_slime.move()
 
+    # Drawing
+    screen.fill((0, 0, 0))  # Fill screen with black
+    my_slime.create()       # Draw the slime
+
+    # Update the display
+    pygame.display.flip() # Or pygame.display.update()
+
+    # Cap the frame rate (e.g., 60 frames per second)
+    clock.tick(60)
+
+# Quit Pygame when the loop ends
+pygame.quit()
 
 
-    pygame.display.update()
