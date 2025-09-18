@@ -10,6 +10,20 @@ screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
 #objects
+class berry:
+    def __init__(self,
+                 regen_time,
+                 size,
+                 cx,
+                 cy):
+        self.regen_time = regen_time
+        self.size = size
+        self.cx = cx
+        self.cy = cy
+
+    def create(self):
+
+
 class Slime:
     def __init__(self,
                  speed,
@@ -17,6 +31,7 @@ class Slime:
                  colour,
                  size,
                  agression,
+                 sight,
                  cx,
                  cy):
         self.speed = speed
@@ -24,6 +39,7 @@ class Slime:
         self.colour = colour
         self.size = size
         self.agression = agression
+        self.sight = sight
         self.cx = cx
         self.cy = cy
         self.posX,self.posY = self.selectlocation()
