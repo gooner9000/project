@@ -21,13 +21,15 @@ class berry:
         self.cx = cx
         self.cy = cy
 
-    def create(self):
+    #def create(self):
 
 
 class Slime:
     def __init__(self,
                  speed,
                  max_hunger,
+                 metabolism,
+                 current_hunger,
                  colour,
                  size,
                  agression,
@@ -36,6 +38,8 @@ class Slime:
                  cy):
         self.speed = speed
         self.max_hunger = max_hunger
+        self.metabolism = metabolism
+        self.current_hunger = current_hunger
         self.colour = colour
         self.size = size
         self.agression = agression
@@ -54,6 +58,20 @@ class Slime:
         locationY = random.randint(self.size,screen_height-self.size)
 
         return locationX,locationY
+
+
+    def die(self):
+        if self.current_hunger <= 0:
+            self.kill()
+
+    def lose_hunger(self,count):
+        count += 1
+        if count >= self.metabolism:
+            self.die()
+            self.current_hunger -= 1
+            print(f"current hunger: {self.current_hunger}")
+            count = 0
+        return count
 
     def move(self):
 
@@ -97,19 +115,32 @@ running = True
 #control framerate
 clock = pygame.time.Clock()
 
+slimes_list = []
 #set start attributes
 start_size = 15
-
+count = 0
 #create slimes at start
-my_slime = Slime(10,
-                 10,
-                 "red",
-                 start_size,
-                 1,
-                 random.randint(start_size,screen.get_width()-start_size),
-                 random.randint(start_size,screen.get_height()-start_size))
+my_slime = Slime(speed=10,
+                 max_hunger=10,
+                 metabolism=10,
+                 current_hunger=10,
+                 colour="red",
+                 size=start_size,
+                 sight=1,
+                 agression=1,
+                 cx=random.randint(start_size,screen.get_width()-start_size),
+                 cy=random.randint(start_size,screen.get_height()-start_size))
 
-
+my_slime2 = Slime(speed=10,
+                 max_hunger=10,
+                 metabolism=100,
+                 current_hunger=10,
+                 colour="red",
+                 size=start_size,
+                 sight=1,
+                 agression=1,
+                 cx=random.randint(start_size,screen.get_width()-start_size),
+                 cy=random.randint(start_size,screen.get_height()-start_size))
 #while the program is playing
 
 while running:
@@ -119,7 +150,11 @@ while running:
             running = False
 
     # Update game state
+
     my_slime.move()
+    count = my_slime.lose_hunger(count)
+    print(count)
+
 
     # Drawing
     screen.fill((0, 0, 0))  # Fill screen with black
