@@ -35,7 +35,8 @@ class Slime:
                  agression,
                  sight,
                  cx,
-                 cy):
+                 cy,
+                 dead):
         self.speed = speed
         self.max_hunger = max_hunger
         self.metabolism = metabolism
@@ -47,11 +48,14 @@ class Slime:
         self.cx = cx
         self.cy = cy
         self.posX,self.posY = self.selectlocation()
+        self.dead = dead
+
 
 
     #function to create slimes at start
     def create(self):
-        pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
+        if self.dead == False:
+            pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
 
     def selectlocation(self):
         locationX = random.randint(self.size,screen_width-self.size)
@@ -62,12 +66,15 @@ class Slime:
 
     def die(self):
         if self.current_hunger <= 0:
-            self.kill()
+
+            return True
+        return False
+
 
     def lose_hunger(self,count):
         count += 1
         if count >= self.metabolism:
-            self.die()
+            self.dead = self.die()
             self.current_hunger -= 1
             print(f"current hunger: {self.current_hunger}")
             count = 0
@@ -120,18 +127,20 @@ slimes_list = []
 start_size = 15
 count = 0
 #create slimes at start
-my_slime = Slime(speed=10,
+my_slime = [Slime(speed=10,
                  max_hunger=10,
-                 metabolism=10,
+                 metabolism=30,
                  current_hunger=10,
                  colour="red",
                  size=start_size,
                  sight=1,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
-                 cy=random.randint(start_size,screen.get_height()-start_size))
+                 cy=random.randint(start_size,screen.get_height()-start_size),
+                 dead=False)
+            ,0]
 
-my_slime2 = Slime(speed=10,
+my_slime2 = [Slime(speed=10,
                  max_hunger=10,
                  metabolism=100,
                  current_hunger=10,
@@ -140,7 +149,11 @@ my_slime2 = Slime(speed=10,
                  sight=1,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
-                 cy=random.randint(start_size,screen.get_height()-start_size))
+                 cy=random.randint(start_size,screen.get_height()-start_size),
+                 dead=False)
+             ,0]
+slimes_list.append(my_slime)
+slimes_list.append(my_slime2)
 #while the program is playing
 
 while running:
@@ -150,18 +163,19 @@ while running:
             running = False
 
     # Update game state
+    screen.fill((0, 0, 0))
+    for slime in slimes_list:
+        slime[0].move()
+        slime[1] = slime[0].lose_hunger(slime[1])
 
-    my_slime.move()
-    count = my_slime.lose_hunger(count)
-    print(count)
 
 
     # Drawing
-    screen.fill((0, 0, 0))  # Fill screen with black
-    my_slime.create()       # Draw the slime
+         # Fill screen with black
+        slime[0].create()       # Draw the slime
 
     # Update the display
-    pygame.display.flip() # Or pygame.display.update()
+        pygame.display.flip() # Or pygame.display.update()
 
     # Cap the frame rate (e.g., 60 frames per second)
     clock.tick(60)
