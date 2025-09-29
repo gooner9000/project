@@ -165,14 +165,16 @@ while running:
     # Update game state
     screen.fill((0, 0, 0))
     for slime in slimes_list:
+        slime[0].create()
+    for slime in slimes_list:
         slime[0].move()
         slime[1] = slime[0].lose_hunger(slime[1])
 
 
 
     # Drawing
-         # Fill screen with black
-        slime[0].create()       # Draw the slime
+        # Fill screen with black
+          # Draw the slime
 
     # Update the display
         pygame.display.flip() # Or pygame.display.update()
