@@ -10,18 +10,24 @@ screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
 #objects
-class berry:
+class Berry:
     def __init__(self,
                  regen_time,
+                 available,
                  size,
                  cx,
                  cy):
         self.regen_time = regen_time
+        self.available = available
         self.size = size
         self.cx = cx
         self.cy = cy
 
-    #def create(self):
+    def create(self):
+        if self.available == True:
+            pygame.draw.circle(screen, 'pink', (self.cx, self.cy), self.size)
+    def eaten(self):
+
 
 
 class Slime:
@@ -109,6 +115,8 @@ class Slime:
 
 
 
+def check_collision(slimeX,slimeY,Ssize,berryX,berryY,Bsize):
+    if
 
 
 
@@ -123,6 +131,7 @@ running = True
 clock = pygame.time.Clock()
 
 slimes_list = []
+berry_list = []
 #set start attributes
 start_size = 15
 count = 0
@@ -144,7 +153,7 @@ my_slime2 = [Slime(speed=10,
                  max_hunger=10,
                  metabolism=100,
                  current_hunger=10,
-                 colour="red",
+                 colour="blue",
                  size=start_size,
                  sight=1,
                  agression=1,
@@ -152,6 +161,13 @@ my_slime2 = [Slime(speed=10,
                  cy=random.randint(start_size,screen.get_height()-start_size),
                  dead=False)
              ,0]
+for i in range(5):
+    Aberry = Berry(regen_time=0.1,
+                   available=True,
+                   size=10,
+                   cx=random.randint(start_size,screen.get_width()-start_size),
+                   cy=random.randint(start_size,screen.get_height()-start_size))
+    berry_list.append(Aberry)
 slimes_list.append(my_slime)
 slimes_list.append(my_slime2)
 #while the program is playing
@@ -166,6 +182,9 @@ while running:
     screen.fill((0, 0, 0))
     for slime in slimes_list:
         slime[0].create()
+    for berry in berry_list:
+        berry.create()
+
     for slime in slimes_list:
         slime[0].move()
         slime[1] = slime[0].lose_hunger(slime[1])
