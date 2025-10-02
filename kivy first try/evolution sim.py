@@ -29,11 +29,9 @@ class Berry:
     def create(self):
         if self.available == True:
             pygame.draw.circle(screen, 'pink', (self.cx, self.cy), self.size)
-    def eaten(self, x, y, slime_hunger):
-        distance = calculate_distance(self.cx, self.cy, x, y)
-        if distance < self.size+10:
-            slime_hunger += 5
-            self.available = False
+    def reset(self):
+
+
 
 
 
@@ -121,6 +119,21 @@ class Slime:
                 self.cx += move_x
                 self.cy += move_y
 
+    def eat(self, berries):
+        for berry in berries:
+            # Check if the berry is available
+            if berry.available:
+                distance = calculate_distance(self.cx, self.cy, berry.cx, berry.cy)
+                # If close enough to eat
+                if distance < self.size + berry.size:
+                    self.current_hunger += 5
+                    # Cap hunger at max_hunger
+                    if self.current_hunger > self.max_hunger:
+                        self.current_hunger = self.max_hunger
+                    berry.available = False  # The slime eats the berry
+                    print(f"Yum! Hunger is now {self.current_hunger}")
+                    break  # Stop checking after eating one berry per frame
+
 
 
 
@@ -177,41 +190,45 @@ for i in range(5):
                    cy=random.randint(start_size,screen.get_height()-start_size))
     berry_list.append(Aberry)
 slimes_list.append(my_slime)
-#slimes_list.append(my_slime2)
+slimes_list.append(my_slime2)
 #while the program is playing
 
 while running:
-    # Event handling
+    # 1. Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # Update game state
+    # 2. Update game state
+    slimes_to_remove = []  # Create an empty list to hold dead slimes
+
+    for slime_data in slimes_list:
+        slime_object = slime_data[0]
+
+        # Update the slime's state
+        slime_object.eat(berry_list)
+        slime_object.move()
+        slime_data[1] = slime_object.lose_hunger(slime_data[1])
+
+        # If the slime is dead, add it to our removal list
+        if slime_object.dead:
+            slimes_to_remove.append(slime_data)
+
+    # 3. Now, safely remove the dead slimes AFTER the main loop is done
+    for dead_slime in slimes_to_remove:
+        slimes_list.remove(dead_slime)
+
+    # 4. Drawing (this part is perfect)
     screen.fill((0, 0, 0))
-    for slime in slimes_list:
-        slime[0].create()
 
-        for berry in berry_list:
-            berry.eaten(slime[0].cx, slime[0].cy, slime[0].current_hunger)
-            berry.create()
+    for berry in berry_list:
+        berry.create()
 
-    index = 0
-    for slime in slimes_list:
-        slime[0].move()
-        slime[1] = slime[0].lose_hunger(slime[1])
-        if slime[0].dead == True:
-            slimes_list.pop(index)
-        index += 1
+    for slime_data in slimes_list:
+        slime_data[0].create()
 
-
-    # Drawing
-        # Fill screen with black
-          # Draw the slime
-
-    # Update the display
-        pygame.display.flip() # Or pygame.display.update()
-
-    # Cap the frame rate (e.g., 60 frames per second)
+    # 5. Update the display
+    pygame.display.flip()
     clock.tick(60)
 
 # Quit Pygame when the loop ends
