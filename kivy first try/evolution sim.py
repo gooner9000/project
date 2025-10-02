@@ -9,7 +9,10 @@ pygame.init()
 screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
+def calculate_distance(x1, y1, x2, y2):
+    return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
 #objects
+
 class Berry:
     def __init__(self,
                  regen_time,
@@ -26,7 +29,12 @@ class Berry:
     def create(self):
         if self.available == True:
             pygame.draw.circle(screen, 'pink', (self.cx, self.cy), self.size)
-    def eaten(self):
+    def eaten(self, x, y, slime_hunger):
+        distance = calculate_distance(self.cx, self.cy, x, y)
+        if distance < self.size+10:
+            slime_hunger += 5
+            self.available = False
+
 
 
 
@@ -60,8 +68,8 @@ class Slime:
 
     #function to create slimes at start
     def create(self):
-        if self.dead == False:
-            pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
+
+        pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
 
     def selectlocation(self):
         locationX = random.randint(self.size,screen_width-self.size)
@@ -94,7 +102,7 @@ class Slime:
         dy = self.posY - self.cy
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
-        # If closer than one step, snap to target and pick new
+    # If closer than one step, snap to target and pick new
         if distance < self.speed:
             wait = True
             while wait == True:
@@ -105,8 +113,8 @@ class Slime:
             self.posX,self.posY = self.selectlocation()
 
         else:
-            #move the circle
-            if distance != 0:
+                #move the circle
+             if distance != 0:
                 move_x = (dx / distance) * self.speed
                 move_y = (dy / distance) * self.speed
 
@@ -115,8 +123,8 @@ class Slime:
 
 
 
-def check_collision(slimeX,slimeY,Ssize,berryX,berryY,Bsize):
-    if
+
+
 
 
 
@@ -164,12 +172,12 @@ my_slime2 = [Slime(speed=10,
 for i in range(5):
     Aberry = Berry(regen_time=0.1,
                    available=True,
-                   size=10,
+                   size=100,
                    cx=random.randint(start_size,screen.get_width()-start_size),
                    cy=random.randint(start_size,screen.get_height()-start_size))
     berry_list.append(Aberry)
 slimes_list.append(my_slime)
-slimes_list.append(my_slime2)
+#slimes_list.append(my_slime2)
 #while the program is playing
 
 while running:
@@ -182,13 +190,18 @@ while running:
     screen.fill((0, 0, 0))
     for slime in slimes_list:
         slime[0].create()
-    for berry in berry_list:
-        berry.create()
 
+        for berry in berry_list:
+            berry.eaten(slime[0].cx, slime[0].cy, slime[0].current_hunger)
+            berry.create()
+
+    index = 0
     for slime in slimes_list:
         slime[0].move()
         slime[1] = slime[0].lose_hunger(slime[1])
-
+        if slime[0].dead == True:
+            slimes_list.pop(index)
+        index += 1
 
 
     # Drawing
