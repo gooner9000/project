@@ -5,6 +5,7 @@ import random
 import pygame
 import math
 import slime
+import berry
 
 
 pygame.init()
@@ -14,32 +15,6 @@ screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
-#objects
-
-class Berry:
-    def __init__(self,
-                 regen_time,
-                 available,
-                 size,
-                 cx,
-                 cy):
-        self.regen_time = regen_time
-        self.available = available
-        self.size = size
-        self.cx = cx
-        self.cy = cy
-
-    def create(self):
-        if self.available == True:
-            pygame.draw.circle(screen, 'pink', (self.cx, self.cy), self.size)
-    def reset(self,count):
-        if self.available == False:
-            count+=1
-            if count >= self.regen_time:
-                self.available = True
-                count = 0
-        return count
-
 
 #set screen size
 
@@ -68,7 +43,7 @@ my_slime = [slime.Slime(speed=10,
 
 my_slime2 = [slime.Slime(speed=10,
                  max_hunger=10,
-                 metabolism=100,
+                 metabolism=50,
                  current_hunger=10,
                  colour="blue",
                  size=start_size,
@@ -79,9 +54,9 @@ my_slime2 = [slime.Slime(speed=10,
                  dead=False)
              ,0]
 for i in range(5):
-    Aberry = [Berry(regen_time=500,
+    Aberry = [berry.Berry(regen_time=500,
                    available=True,
-                   size=100,
+                   size=25,
                    cx=random.randint(start_size,screen.get_width()-start_size),
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
