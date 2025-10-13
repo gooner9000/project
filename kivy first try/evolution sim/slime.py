@@ -10,9 +10,10 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 class Slime:
     def __init__(self,
                  speed,
-                 max_hunger,
+                 max_calories,
                  metabolism,
-                 current_hunger,
+                 current_calories,
+                 hunger_num,
                  colour,
                  size,
                  agression,
@@ -21,9 +22,10 @@ class Slime:
                  cy,
                  dead):
         self.speed = speed
-        self.max_hunger = max_hunger
+        self.max_calories = max_calories
         self.metabolism = metabolism
-        self.current_hunger = current_hunger
+        self.current_calories = current_calories
+        self.hunger = hunger_num
         self.colour = colour
         self.size = size
         self.agression = agression
@@ -40,7 +42,11 @@ class Slime:
 
         pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
 
-    def selectlocation(self):
+    def selectlocation(self,berries):
+        if self.calories <= self.max_calories:
+            for berry in berries:
+
+
         locationX = random.randint(self.size,screen_width-self.size)
         locationY = random.randint(self.size,screen_height-self.size)
 
@@ -48,7 +54,7 @@ class Slime:
 
 
     def die(self):
-        if self.current_hunger <= 0:
+        if self.current_calories <= 0:
 
             return True
         return False
@@ -58,8 +64,8 @@ class Slime:
         count += 1
         if count >= self.metabolism:
             self.dead = self.die()
-            self.current_hunger -= 1
-            print(f"current hunger: {self.current_hunger}")
+            self.current_calories -= 1
+            print(f"current hunger: {self.current_calories}")
             count = 0
         return count
 
@@ -97,10 +103,10 @@ class Slime:
                 distance = calculate_distance(self.cx, self.cy, berry[0].cx, berry[0].cy)
                 # If close enough to eat
                 if distance < self.size + berry[0].size:
-                    self.current_hunger += 5
+                    self.current_calories += 5
                     # Cap hunger at max_hunger
-                    if self.current_hunger > self.max_hunger:
-                        self.current_hunger = self.max_hunger
+                    if self.current_calories > self.max_calories:
+                        self.current_calories = self.max_calories
                     berry[0].available = False  # The slime eats the berry
-                    print(f"Yum! Hunger is now {self.current_hunger}")
+                    print(f"Yum! Hunger is now {self.current_calories}")
                     break  # Stop checking after eating one berry per frame

@@ -29,29 +29,29 @@ start_size = 15
 count = 0
 #create slimes at start
 my_slime = [slime.Slime(speed=10,
-                 max_hunger=10,
-                 metabolism=30,
-                 current_hunger=10,
-                 colour="red",
-                 size=start_size,
-                 sight=1,
-                 agression=1,
-                 cx=random.randint(start_size,screen.get_width()-start_size),
-                 cy=random.randint(start_size,screen.get_height()-start_size),
-                 dead=False)
+                        max_calories=10,
+                        metabolism=30,
+                        current_calories=10,
+                        colour="red",
+                        size=start_size,
+                        sight=1,
+                        agression=1,
+                        cx=random.randint(start_size,screen.get_width()-start_size),
+                        cy=random.randint(start_size,screen.get_height()-start_size),
+                        dead=False)
             ,0]
 
 my_slime2 = [slime.Slime(speed=10,
-                 max_hunger=10,
-                 metabolism=50,
-                 current_hunger=10,
-                 colour="blue",
-                 size=start_size,
-                 sight=1,
-                 agression=1,
-                 cx=random.randint(start_size,screen.get_width()-start_size),
-                 cy=random.randint(start_size,screen.get_height()-start_size),
-                 dead=False)
+                         max_calories=10,
+                         metabolism=50,
+                         current_calories=10,
+                         colour="blue",
+                         size=start_size,
+                         sight=1,
+                         agression=1,
+                         cx=random.randint(start_size,screen.get_width()-start_size),
+                         cy=random.randint(start_size,screen.get_height()-start_size),
+                         dead=False)
              ,0]
 for i in range(5):
     Aberry = [berry.Berry(regen_time=500,
