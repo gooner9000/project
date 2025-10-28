@@ -27,32 +27,7 @@ berry_list = []
 #set start attributes
 start_size = 15
 count = 0
-#create slimes at start
-my_slime = [slime.Slime(speed=10,
-                        max_calories=10,
-                        metabolism=30,
-                        current_calories=10,
-                        colour="red",
-                        size=start_size,
-                        sight=1,
-                        agression=1,
-                        cx=random.randint(start_size,screen.get_width()-start_size),
-                        cy=random.randint(start_size,screen.get_height()-start_size),
-                        dead=False)
-            ,0]
 
-my_slime2 = [slime.Slime(speed=10,
-                         max_calories=10,
-                         metabolism=50,
-                         current_calories=10,
-                         colour="blue",
-                         size=start_size,
-                         sight=1,
-                         agression=1,
-                         cx=random.randint(start_size,screen.get_width()-start_size),
-                         cy=random.randint(start_size,screen.get_height()-start_size),
-                         dead=False)
-             ,0]
 for i in range(5):
     Aberry = [berry.Berry(regen_time=500,
                    available=True,
@@ -60,6 +35,35 @@ for i in range(5):
                    cx=random.randint(start_size,screen.get_width()-start_size),
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
+#create slimes at start
+my_slime = [slime.Slime(speed=10,
+                 max_hunger=10,
+                 metabolism=30,
+                 current_hunger=10,
+                 colour="red",
+                 size=start_size,
+                 sight=50,
+                 agression=1,
+                 cx=random.randint(start_size,screen.get_width()-start_size),
+                 cy=random.randint(start_size,screen.get_height()-start_size),
+                 dead=False,
+                 berries=berry_list)
+             ,0]
+
+my_slime2 = [slime.Slime(speed=10,
+                 max_hunger=10,
+                 metabolism=50,
+                 current_hunger=10,
+                 colour="blue",
+                 size=start_size,
+                 sight=50,
+                 agression=1,
+                 cx=random.randint(start_size,screen.get_width()-start_size),
+                 cy=random.randint(start_size,screen.get_height()-start_size),
+                 dead=False,
+                 berries=berry_list)
+             ,0]
+
 slimes_list.append(my_slime)
 slimes_list.append(my_slime2)
 #while the program is playing
@@ -77,7 +81,7 @@ while running:
         slime_object = slime_data[0]
 
         # Update the slime's state
-        slime_object.eat(berry_list)
+        slime_object.eat()
         slime_object.move()
         slime_data[1] = slime_object.lose_hunger(slime_data[1])
 
