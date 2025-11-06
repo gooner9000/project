@@ -41,36 +41,43 @@ class Slime:
     def create(self):
 
         pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
+        #visiulize where its going to go
+        pygame.draw.line(screen, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
+        #visualize sight
+        pygame.draw.circle(screen, self.colour, (self.cx, self.cy), self.sight, 1)
     def Ishungry(self):
         if self.current_hunger < self.max_hunger / 2:
             return True
         else:
             return False
 
+    def Checkforberry(self,berry):
 
+        if berry[0].available:
+            distance = calculate_distance(self.cx, self.cy, berry[0].cx, berry[0].cy)
+            # If close enough to see
+            if distance < self.sight:
 
+                return True
+        return False
     def selectlocation(self):
         hungry = self.Ishungry()
+        locationX = random.randint(self.size, screen_width - self.size)
+        locationY = random.randint(self.size, screen_height - self.size)
         if not hungry:
             print('not hungry')
-            locationX = random.randint(self.size,screen_width-self.size)
-            locationY = random.randint(self.size,screen_height-self.size)
-        if hungry:
+            return locationX, locationY
+        else:
             print('hungry')
             #enter look for food state
             for berry in self.berries:
-                # Check if the berry is available
-                if berry[0].available:
-                    distance = calculate_distance(self.cx, self.cy, berry[0].cx, berry[0].cy)
-                    # If close enough to see
-                    if distance < self.size + berry[0].size + self.sight:
-                        locationX = berry[0].cx
-                        locationY = berry[0].cy
-                        print('going towards berry')
-                    else:
-                        locationX = random.randint(self.size, screen_width - self.size)
-                        locationY = random.randint(self.size, screen_height - self.size)
-                        print('no berry')
+                if self.Checkforberry(berry) == True:
+                    locationX = berry[0].cx
+                    locationY = berry[0].cy
+                    print('going towards berry')
+                    break
+
+
 
 
         return locationX,locationY
@@ -93,7 +100,22 @@ class Slime:
         return count
 
     def move(self):
-
+        #check to interupt
+        if self.Ishungry():
+            is_targeting_food = False
+            #check if already targeting
+            for berry in self.berries:
+                if berry[0].available and self.posX == berry[0].cx and self.posY == berry[0].cy:
+                    is_targeting_food = True
+                    break
+            #if not then target
+            if not is_targeting_food:
+                for berry in self.berries:
+                    if self.Checkforberry(berry):
+                        print("interupted going towards berry")
+                        self.posX = berry[0].cx
+                        self.posY = berry[0].cy
+                        break
 
         #calculate distance
         dx = self.posX - self.cx

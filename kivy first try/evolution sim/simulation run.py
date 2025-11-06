@@ -28,7 +28,7 @@ berry_list = []
 start_size = 15
 count = 0
 
-for i in range(5):
+for i in range(4):
     Aberry = [berry.Berry(regen_time=500,
                    available=True,
                    size=25,
@@ -42,7 +42,7 @@ my_slime = [slime.Slime(speed=10,
                  current_hunger=10,
                  colour="red",
                  size=start_size,
-                 sight=200,
+                 sight=300,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
                  cy=random.randint(start_size,screen.get_height()-start_size),
@@ -56,7 +56,7 @@ my_slime2 = [slime.Slime(speed=10,
                  current_hunger=10,
                  colour="blue",
                  size=start_size,
-                 sight=200,
+                 sight=300,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
                  cy=random.randint(start_size,screen.get_height()-start_size),
