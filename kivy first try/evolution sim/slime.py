@@ -20,7 +20,8 @@ class Slime:
                  cx,
                  cy,
                  dead,
-                 berries):
+                 berries,
+                 busy = False):
         self.speed = speed
         self.max_hunger = max_hunger
         self.metabolism = metabolism
@@ -34,7 +35,7 @@ class Slime:
         self.posX,self.posY = self.selectlocation()
         self.dead = dead
         self.berries = berries
-
+        self.busy = busy
 
 
 
@@ -121,6 +122,7 @@ class Slime:
                     is_targeting_food = True
                     break
             #if not then target
+            # change so it picks the closest berry
             if not is_targeting_food:
                 for berry in self.berries:
                     if self.Checkforberry(berry):
@@ -129,21 +131,21 @@ class Slime:
                         self.posY = berry[0].cy
                         break
         if self.Canreproduce():
-            is_targeting_slime = False
-            for slime in slime_list:
-                if self.posX == slime[0].cx and self.posY == slime[0].cy:
-                    is_targeting_slime = True
-                    break
-            if not is_targeting_slime:
+            if self.busy == False:
                 for slime in slime_list:
                     if slime[0] != self and self.Checkforslime(slime):
                         if slime[0].cx != self.cx and slime[0].cy != self.cy:
-                            if slime[0].Canreproduce():
+                            if slime[0].Canreproduce() and slime[0].busy == False:
                                 print("going towards slime")
                                 self.posX = slime[0].cx
                                 self.posY = slime[0].cy
-
                                 break
+            for slime in slime_list:
+                if self.posX == slime[0].cx and self.posY == slime[0].cy:
+                    self.busy = True
+                    print("is targeting")
+                    break
+
 
         #calculate distance
         dx = self.posX - self.cx

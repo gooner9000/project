@@ -36,14 +36,14 @@ for i in range(6):
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
 #create slimes at start
-for i in range(1):
+for i in range(6):
     my_slime = [slime.Slime(speed=10,
                  max_hunger=10,
                  metabolism=1000,
                  current_hunger=10,
                  colour="red",
                  size=start_size,
-                 sight=2000,
+                 sight=200,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
                  cy=random.randint(start_size,screen.get_height()-start_size),
@@ -51,14 +51,14 @@ for i in range(1):
                  berries=berry_list)
              ,0]
     slimes_list.append(my_slime)
-for i in range(1):
+for i in range(6):
     my_slime2 = [slime.Slime(speed=10,
                      max_hunger=10,
                      metabolism=1000,
                     current_hunger=10,
                      colour="blue",
                     size=start_size,
-                     sight=2000,
+                     sight=200,
                      agression=1,
                      cx=random.randint(start_size,screen.get_width()-start_size),
                      cy=random.randint(start_size,screen.get_height()-start_size),
