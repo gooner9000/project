@@ -36,10 +36,25 @@ class Slime:
         self.dead = dead
         self.berries = berries
         self.busy = busy
+        self.repro_timer = 0
+        self.reproducing = False
 
 
+    #
+    def start_reproduction(self, other):
+        if self.reproducing or other.reproducing:
+            return
+        self.reproducing = True
+        other.reproducing = True
 
-    #function to create slimes at start
+        self.busy = True
+        other.busy = True
+
+        self.repro_timer = 60
+        other.repro_timer = 60
+
+        print("Reproducing...")
+
     def create(self):
 
         pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
@@ -113,6 +128,16 @@ class Slime:
         return count
 
     def move(self,slime_list):
+        # If reproducing, freeze and count down
+        if self.reproducing:
+            self.repro_timer -= 1
+
+            if self.repro_timer <= 0:
+                self.reproducing = False
+                self.busy = False
+                print("Finished reproducing.")
+
+            return  # skip movement while reproducing
         #check to interupt
         if self.Ishungry():
             is_targeting_food = False
@@ -131,20 +156,27 @@ class Slime:
                         self.posY = berry[0].cy
                         break
         if self.Canreproduce():
+            for slime in slime_list:
+                distance = calculate_distance(self.cx, self.cy, slime[0].cx, slime[0].cy)
+                print(distance)
+                # If close enough to reproduce
+                if distance < self.size + slime[0].size:
+                    self.start_reproduction(slime[0])
+                    return
             if self.busy == False:
                 for slime in slime_list:
-                    if slime[0] != self and self.Checkforslime(slime):
+                    if (slime[0] != self
+                            and not slime[0].busy
+                            and not slime[0].reproducing
+                            and slime[0].Canreproduce()
+                            and self.Checkforslime(slime)):
                         if slime[0].cx != self.cx and slime[0].cy != self.cy:
-                            if slime[0].Canreproduce() and slime[0].busy == False:
-                                print("going towards slime")
-                                self.posX = slime[0].cx
-                                self.posY = slime[0].cy
-                                break
-            for slime in slime_list:
-                if self.posX == slime[0].cx and self.posY == slime[0].cy:
-                    self.busy = True
-                    print("is targeting")
-                    break
+
+                            print("going towards slime")
+                            self.posX = slime[0].cx
+                            self.posY = slime[0].cy
+                            break
+
 
 
         #calculate distance
