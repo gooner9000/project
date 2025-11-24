@@ -26,9 +26,11 @@ slimes_list = []
 berry_list = []
 #set start attributes
 start_size = 25
+
+
 count = 0
 
-for i in range(6):
+for i in range(20):
     Aberry = [berry.Berry(regen_time=500,
                    available=True,
                    size=15,
@@ -36,10 +38,10 @@ for i in range(6):
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
 #create slimes at start
-for i in range(1):
+for i in range(2):
     my_slime = [slime.Slime(speed=10,
                  max_hunger=10,
-                 metabolism=1000,
+                 metabolism=100,
                  current_hunger=10,
                  colour="red",
                  size=start_size,
@@ -51,10 +53,10 @@ for i in range(1):
                  berries=berry_list)
              ,0]
     slimes_list.append(my_slime)
-for i in range(1):
+for i in range(2):
     my_slime2 = [slime.Slime(speed=10,
                      max_hunger=10,
-                     metabolism=1000,
+                     metabolism=100,
                     current_hunger=10,
                      colour="blue",
                     size=start_size,
@@ -84,7 +86,7 @@ while running:
 
         # Update the slime's state
         slime[0].eat()
-        slime[0].move()
+        slime[0].move(slimes_list)
         slime[1] = slime[0].lose_hunger(slime[1])
 
         # If the slime is dead, add it to our removal list
