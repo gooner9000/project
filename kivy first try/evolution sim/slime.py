@@ -1,7 +1,6 @@
-import random
 import math
 import pygame
-
+import random
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
 screen_width = 1360
@@ -31,10 +30,9 @@ class Slime:
         self.sight = sight
         self.cx = cx
         self.cy = cy
-        self.posX,self.posY = self.selectlocation()
+        self.posX,self.posY = self.selectlocation([])
         self.dead = dead
         self.berries = berries
-
 
 
 
@@ -49,14 +47,14 @@ class Slime:
     def Ishungry(self):
         if self.current_hunger < self.max_hunger * 0.5:
             return True
-
-        return False
+        else:
+            return False
     def Canreproduce(self):
-        if self.current_hunger >= self.max_hunger*0.7:
-            print("able to reproduce")
+        if self.current_hunger >= self.max_hunger * 0.7:
+            print("can reproduce")
             return True
-        return False
-
+        else:
+            return False
     def Checkforberry(self,berry):
 
         if berry[0].available:
@@ -68,18 +66,19 @@ class Slime:
         return False
     def Checkforslime(self,slime):
         distance = calculate_distance(self.cx, self.cy, slime[0].cx, slime[0].cy)
-        if distance < self.sight:
+        if distance < self.sight and slime[0] is not self:
             return True
         return False
-
-    def selectlocation(self):
+    def selectlocation(self,slimes):
         hungry = self.Ishungry()
+        repro_able = self.Canreproduce()
         locationX = random.randint(self.size, screen_width - self.size)
         locationY = random.randint(self.size, screen_height - self.size)
-        if not hungry:
+        if not hungry and not repro_able:
             print('not hungry')
+            print('cant reproduce')
             return locationX, locationY
-        else:
+        elif hungry:
             print('hungry')
             #enter look for food state
             for berry in self.berries:
@@ -87,6 +86,15 @@ class Slime:
                     locationX = berry[0].cx
                     locationY = berry[0].cy
                     print('going towards berry')
+                    break
+        elif repro_able:
+            print('can reproduce')
+            #enter look for slime state
+            for slime in slimes:
+                if self.Checkforslime(slime) == True:
+                    locationX = slime[0].cx
+                    locationY = slime[0].cy
+                    print('going towards slime')
                     break
 
 
@@ -111,16 +119,16 @@ class Slime:
             count = 0
         return count
 
-    def move(self,slime_list):
+    def move(self,slimes):
         #check to interupt
         if self.Ishungry():
             is_targeting_food = False
-            #check if already targeting
+            #check if already targeting food
             for berry in self.berries:
                 if berry[0].available and self.posX == berry[0].cx and self.posY == berry[0].cy:
                     is_targeting_food = True
                     break
-            #if not then target
+            #if not then target food
             if not is_targeting_food:
                 for berry in self.berries:
                     if self.Checkforberry(berry):
@@ -130,20 +138,21 @@ class Slime:
                         break
         if self.Canreproduce():
             is_targeting_slime = False
-            for slime in slime_list:
+            #check if already targeting slime
+            for slime in slimes:
                 if self.posX == slime[0].cx and self.posY == slime[0].cy:
-                    is_targeting_slime = True
+                    print("is already targeting")
+                    is_targeting_food = True
                     break
+            #if not then target slime
             if not is_targeting_slime:
-                for slime in slime_list:
-                    if slime[0] != self and self.Checkforslime(slime):
-                        if slime[0].cx != self.cx and slime[0].cy != self.cy:
-                            if slime[0].Canreproduce():
-                                print("going towards slime")
-                                self.posX = slime[0].cx
-                                self.posY = slime[0].cy
+                for slime in slimes:
+                    if self.Checkforslime(slime):
+                        print("interupted going towards slime")
+                        self.posX = slime[0].cx
+                        self.posY = slime[0].cy
+                        break
 
-                                break
 
         #calculate distance
         dx = self.posX - self.cx
@@ -152,10 +161,13 @@ class Slime:
 
     # If closer than one step, snap to target and pick new
         if distance < self.speed:
-
+            wait = True
+            while wait == True:
+                for i in range(0,random.randint(100000,100000)):
+                    wait = False
             self.cx = self.posX
             self.cy = self.posY
-            self.posX,self.posY = self.selectlocation()
+            self.posX,self.posY = self.selectlocation(slimes)
 
         else:
                 #move the circle
@@ -180,5 +192,3 @@ class Slime:
                     berry[0].available = False  # The slime eats the berry
                     print(f"Yum! Hunger is now {self.current_hunger}")
                     break  # Stop checking after eating one berry per frame
-
-
