@@ -3,6 +3,10 @@ import pygame
 import random
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
+def check_collision(x1,y1,x2,y2):
+    if calculate_distance(x1,y1,x2,y2) <= 3:
+        return True
+    return False
 screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -33,7 +37,7 @@ class Slime:
         self.posX,self.posY = self.selectlocation([])
         self.dead = dead
         self.berries = berries
-
+        self.Can_copy = False
 
 
     #function to create slimes at start
@@ -49,6 +53,11 @@ class Slime:
             return True
         else:
             return False
+    def Reproduce(self,slime):
+        print("reproducing")
+        self.current_hunger = self.current_hunger * 0.6
+        slime.current_hunger = slime.current_hunger * 0.6
+        self.Can_copy = True
     def Canreproduce(self):
         if self.current_hunger >= self.max_hunger * 0.7:
             print("can reproduce")
@@ -91,10 +100,12 @@ class Slime:
             print('can reproduce')
             #enter look for slime state
             for slime in slimes:
-                if self.Checkforslime(slime) == True:
+                if self.Checkforslime(slime) == True and slime[0].Canreproduce():
                     locationX = slime[0].cx
                     locationY = slime[0].cy
                     print('going towards slime')
+                    if check_collision(self.cx,self.cy,slime[0].cx,slime[0].cy):
+                        self.Reproduce(slime[0])
                     break
 
 
@@ -143,14 +154,18 @@ class Slime:
                 if self.posX == slime[0].cx and self.posY == slime[0].cy:
                     print("is already targeting")
                     is_targeting_food = True
+                    if check_collision(self.cx,self.cy,slime[0].cx,slime[0].cy):
+                        self.Reproduce(slime[0])
                     break
             #if not then target slime
             if not is_targeting_slime:
                 for slime in slimes:
-                    if self.Checkforslime(slime):
+                    if self.Checkforslime(slime) and slime[0].Canreproduce():
                         print("interupted going towards slime")
                         self.posX = slime[0].cx
                         self.posY = slime[0].cy
+                        if check_collision(self.cx, self.cy, slime[0].cx, slime[0].cy):
+                            self.Reproduce(slime[0])
                         break
 
 

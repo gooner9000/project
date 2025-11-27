@@ -15,6 +15,23 @@ screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
+def Create_new_slime(slime1,slime2,berry_list,):
+    slime1 = slime1[0]
+    slime2 = slime2[0]
+    mutation_variable = 0.1
+    speed = (slime1.speed + slime2.speed)/2
+    max_hunger = (slime1.hunger + slime2.hunger)/2
+    metabolism = (slime1.metabolism + slime2.metabolism)/2
+    current_hunger = max_hunger
+    colour = "purple"
+    size = (slime1.size + slime2.size)/2
+    agression = (slime1.agression + slime2.agression)/2
+    sight = (slime1.sight + slime2.sight)/2
+    cx = (slime1.cx + slime2.cx)/2
+    cy = (slime1.cy + slime2.cy)/2
+    dead = False
+    berries = berry_list
+    return speed,max_hunger,metabolism,current_hunger,colour,size,agression,sight,cx,cy,dead,berries
 
 #set screen size
 
@@ -88,6 +105,7 @@ while running:
         slime[0].eat()
         slime[0].move(slimes_list)
         slime[1] = slime[0].lose_hunger(slime[1])
+
 
         # If the slime is dead, add it to our removal list
         if slime[0].dead:
