@@ -4,8 +4,9 @@
 import random
 import pygame
 import math
-import slime
+import Oslime
 import berry
+
 
 
 pygame.init()
@@ -13,18 +14,22 @@ pygame.init()
 screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
+mutation_value = 0.1
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
+def calculate_mutation(slime1,slime2,attribute):
+    return random.randint(round(-1 * mutation_value * (slime1.attribute + slime2.attribute)),
+                   round(mutation_value * (slime1.attribute + slime2.attribute)))
 def Create_new_slime(slime1,slime2,berry_list,):
-    slime1 = slime1[0]
-    slime2 = slime2[0]
-    mutation_variable = 0.1
-    speed = (slime1.speed + slime2.speed)/2
-    max_hunger = (slime1.hunger + slime2.hunger)/2
+
+
+
+    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
+    max_hunger = (slime1.max_hunger + slime2.max_hunger)/2
     metabolism = (slime1.metabolism + slime2.metabolism)/2
-    current_hunger = max_hunger
+    current_hunger = max_hunger*0.6
     colour = "purple"
-    size = (slime1.size + slime2.size)/2
+    size = round((slime1.size + slime2.size)/2)
     agression = (slime1.agression + slime2.agression)/2
     sight = (slime1.sight + slime2.sight)/2
     cx = (slime1.cx + slime2.cx)/2
@@ -56,7 +61,7 @@ for i in range(20):
     berry_list.append(Aberry)
 #create slimes at start
 for i in range(2):
-    my_slime = [slime.Slime(speed=10,
+    my_slime = [Oslime.Slime(speed=4,
                  max_hunger=10,
                  metabolism=100,
                  current_hunger=10,
@@ -71,7 +76,7 @@ for i in range(2):
              ,0]
     slimes_list.append(my_slime)
 for i in range(2):
-    my_slime2 = [slime.Slime(speed=10,
+    my_slime2 = [Oslime.Slime(speed=4,
                      max_hunger=10,
                      metabolism=100,
                     current_hunger=10,
@@ -108,11 +113,25 @@ while running:
         slime[1] = slime[0].lose_hunger(slime[1])
         if partner is not None:
             if slime[0].Can_copy and partner.Can_copy:
-                new_slime = [Create_new_slime(slime[0],partner,berry_list),0]
+                partner.Can_copy = False
+                new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
+                new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
+                     max_hunger=new_slime_attributes[1],
+                     metabolism=new_slime_attributes[2],
+                    current_hunger=new_slime_attributes[3],
+                     colour=new_slime_attributes[4],
+                    size=new_slime_attributes[5],
+                     sight=new_slime_attributes[7],
+                     agression=new_slime_attributes[6],
+                     cx=new_slime_attributes[8],
+                     cy=new_slime_attributes[9],
+                    dead=new_slime_attributes[10],
+                     berries=new_slime_attributes[11])
+                ,0]
                 slimes_list.append(new_slime)
                 slime[0].current_hunger = slime[0].current_hunger * 0.6
                 partner.current_hunger = partner.current_hunger * 0.6
-
+                partner = None
         # If the slime is dead, add it to our removal list
         if slime[0].dead:
             slimes_to_remove.append(slime)
