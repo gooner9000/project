@@ -102,10 +102,16 @@ while running:
 
 
         # Update the slime's state
+        partner = slime[0].move(slimes_list)
         slime[0].eat()
         slime[0].move(slimes_list)
         slime[1] = slime[0].lose_hunger(slime[1])
-
+        if partner is not None:
+            if slime[0].Can_copy and partner.Can_copy:
+                new_slime = [Create_new_slime(slime[0],partner,berry_list),0]
+                slimes_list.append(new_slime)
+                slime[0].current_hunger = slime[0].current_hunger * 0.6
+                partner.current_hunger = partner.current_hunger * 0.6
 
         # If the slime is dead, add it to our removal list
         if slime[0].dead:

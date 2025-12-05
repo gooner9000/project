@@ -55,9 +55,10 @@ class Slime:
             return False
     def Reproduce(self,slime):
         print("reproducing")
-        self.current_hunger = self.current_hunger * 0.6
-        slime.current_hunger = slime.current_hunger * 0.6
+
         self.Can_copy = True
+        partner = slime
+        return partner
     def Canreproduce(self):
         if self.current_hunger >= self.max_hunger * 0.7:
             print("can reproduce")
@@ -155,7 +156,8 @@ class Slime:
                     print("is already targeting")
                     is_targeting_food = True
                     if check_collision(self.cx,self.cy,slime[0].cx,slime[0].cy):
-                        self.Reproduce(slime[0])
+                        partner = self.Reproduce(slime[0])
+                        return partner
                     break
             #if not then target slime
             if not is_targeting_slime:
