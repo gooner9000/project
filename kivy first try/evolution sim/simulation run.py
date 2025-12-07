@@ -17,9 +17,19 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 mutation_value = 0.1
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
-def calculate_mutation(slime1,slime2,attribute):
-    return random.randint(round(-1 * mutation_value * (slime1.attribute + slime2.attribute)),
-                   round(mutation_value * (slime1.attribute + slime2.attribute)))
+
+
+def calculate_mutation(slime1, slime2, attribute_name):
+    # Get the actual values dynamically using getattr()
+    val1 = getattr(slime1, attribute_name)
+    val2 = getattr(slime2, attribute_name)
+
+    # Calculate the mutation range based on those values
+    combined_val = val1 + val2
+    lower_bound = round(-1 * mutation_value * combined_val)
+    upper_bound = round(mutation_value * combined_val)
+
+    return random.randint(lower_bound, upper_bound)
 def Create_new_slime(slime1,slime2,berry_list,):
 
 
@@ -29,9 +39,9 @@ def Create_new_slime(slime1,slime2,berry_list,):
     metabolism = (slime1.metabolism + slime2.metabolism)/2
     current_hunger = max_hunger*0.6
     colour = "purple"
-    size = round((slime1.size + slime2.size)/2)
+    size = round((slime1.size + slime2.size)/2) + calculate_mutation(slime1,slime2,'size')
     agression = (slime1.agression + slime2.agression)/2
-    sight = (slime1.sight + slime2.sight)/2
+    sight = (slime1.sight + slime2.sight)/2 + calculate_mutation(slime1,slime2,'size')
     cx = (slime1.cx + slime2.cx)/2
     cy = (slime1.cy + slime2.cy)/2
     dead = False
@@ -47,27 +57,27 @@ clock = pygame.time.Clock()
 slimes_list = []
 berry_list = []
 #set start attributes
-start_size = 25
+start_size = 5
 
 
 count = 0
 
-for i in range(20):
+for i in range(40):
     Aberry = [berry.Berry(regen_time=500,
                    available=True,
-                   size=15,
+                   size=2,
                    cx=random.randint(start_size,screen.get_width()-start_size),
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
 #create slimes at start
 for i in range(2):
-    my_slime = [Oslime.Slime(speed=4,
+    my_slime = [Oslime.Slime(speed=2,
                  max_hunger=10,
-                 metabolism=100,
+                 metabolism=50,
                  current_hunger=10,
                  colour="red",
                  size=start_size,
-                 sight=200,
+                 sight=50,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
                  cy=random.randint(start_size,screen.get_height()-start_size),
@@ -76,13 +86,13 @@ for i in range(2):
              ,0]
     slimes_list.append(my_slime)
 for i in range(2):
-    my_slime2 = [Oslime.Slime(speed=4,
+    my_slime2 = [Oslime.Slime(speed=2,
                      max_hunger=10,
-                     metabolism=100,
+                     metabolism=50,
                     current_hunger=10,
                      colour="blue",
                     size=start_size,
-                     sight=200,
+                     sight=50,
                      agression=1,
                      cx=random.randint(start_size,screen.get_width()-start_size),
                      cy=random.randint(start_size,screen.get_height()-start_size),
