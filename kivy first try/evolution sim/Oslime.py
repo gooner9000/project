@@ -24,6 +24,9 @@ class Slime:
                  cy,
                  dead,
                  berries):
+        self.dead = dead
+        self.berries = berries
+        self.Can_copy = False
         self.speed = speed
         self.max_hunger = max_hunger
         self.metabolism = metabolism
@@ -35,9 +38,7 @@ class Slime:
         self.cx = cx
         self.cy = cy
         self.posX,self.posY = self.selectlocation([])
-        self.dead = dead
-        self.berries = berries
-        self.Can_copy = False
+
 
 
     #function to create slimes at start
@@ -45,9 +46,9 @@ class Slime:
 
         pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
         #visiulize where its going to go
-        pygame.draw.line(screen, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
+        #pygame.draw.line(screen, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
         #visualize sight
-        pygame.draw.circle(screen, self.colour, (self.cx, self.cy), self.sight, 1)
+        #pygame.draw.circle(screen, self.colour, (self.cx, self.cy), self.sight, 1)
     def Ishungry(self):
         if self.current_hunger < self.max_hunger * 0.5:
             return True
