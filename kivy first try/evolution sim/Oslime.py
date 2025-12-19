@@ -167,7 +167,8 @@ class Slime:
                         self.posX = slime[0].cx
                         self.posY = slime[0].cy
                         if check_collision(self.cx, self.cy, slime[0].cx, slime[0].cy):
-                            self.Reproduce(slime[0])
+                            partner = self.Reproduce(slime[0])
+                            return partner
                         break
 
 

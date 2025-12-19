@@ -57,27 +57,27 @@ clock = pygame.time.Clock()
 slimes_list = []
 berry_list = []
 #set start attributes
-start_size = 5
+start_size = 25
 
 
 count = 0
 
-for i in range(40):
+for i in range(8):
     Aberry = [berry.Berry(regen_time=500,
                    available=True,
-                   size=2,
+                   size=10,
                    cx=random.randint(start_size,screen.get_width()-start_size),
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
 #create slimes at start
 for i in range(2):
-    my_slime = [Oslime.Slime(speed=2,
+    my_slime = [Oslime.Slime(speed=5,
                  max_hunger=10,
-                 metabolism=50,
+                 metabolism=100,
                  current_hunger=10,
                  colour="red",
                  size=start_size,
-                 sight=50,
+                 sight=200,
                  agression=1,
                  cx=random.randint(start_size,screen.get_width()-start_size),
                  cy=random.randint(start_size,screen.get_height()-start_size),
@@ -88,11 +88,11 @@ for i in range(2):
 for i in range(2):
     my_slime2 = [Oslime.Slime(speed=2,
                      max_hunger=10,
-                     metabolism=50,
+                     metabolism=100,
                     current_hunger=10,
                      colour="blue",
                     size=start_size,
-                     sight=50,
+                     sight=200,
                      agression=1,
                      cx=random.randint(start_size,screen.get_width()-start_size),
                      cy=random.randint(start_size,screen.get_height()-start_size),
@@ -123,6 +123,7 @@ while running:
         slime[1] = slime[0].lose_hunger(slime[1])
         if partner is not None:
             if slime[0].Can_copy and partner.Can_copy:
+                slime[0].Can_copy = False
                 partner.Can_copy = False
                 new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
                 new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
