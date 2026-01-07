@@ -6,71 +6,21 @@ import pygame
 import math
 import Oslime
 import berry
-
+import ui
 
 
 pygame.init()
 pygame.font.init()
 
-stat_font = pygame.font.SysFont('Arial', 16, bold = True)
+
 #set screen size
 screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
 mutation_value = 0.2
 
-def get_averages(slimes):
-    count = len(slimes)
 
-    if count == 0:
-        # If no slimes, just show count 0 to avoid divide by zero errors
-        text = font.render("Population: 0", True, (255, 255, 255))
-        surface.blit(text, (10, 10))
-        return
 
-    # Initialize sums
-    total_speed = 0
-    total_size = 0
-    total_sight = 0
-    total_metabolism = 0
-
-    # Sum up attributes
-    for slime_data in slimes:
-        # Remember slime_data is [slime_object, timer], so we access slime_data[0]
-        s = slime_data[0]
-        total_speed += s.speed
-        total_size += s.size
-        total_sight += s.sight
-        total_metabolism += s.metabolism
-
-    # Calculate averages
-    avg_speed = round(total_speed / count, 2)
-    avg_size = round(total_size / count, 2)
-    avg_sight = round(total_sight / count, 2)
-    avg_meta = round(total_metabolism / count, 2)
-
-    return count, avg_speed, avg_size, avg_sight, avg_meta
-def draw_stats(surface, font, slimes, start_stats):
-    s_count, s_speed, s_size, s_sight, s_metabolism = start_stats
-    count, avg_speed, avg_size, avg_sight, avg_meta = get_averages(slimes)
-    # Create text surfaces
-    # render(Text, Antialias, Color)
-    pop_text = font.render(f"Population: {count}, Start: {s_count}", True, (255, 255, 255))
-    speed_text = font.render(f"Avg Speed: {avg_speed}, Start: {s_speed}", True, (255, 255, 255))
-    size_text = font.render(f"Avg Size: {avg_size}, Start: {s_size}", True, (255, 255, 255))
-    sight_text = font.render(f"Avg Sight: {avg_sight}, Start: {s_sight}", True, (255, 255, 255))
-    meta_text = font.render(f"Avg Metabolism: {avg_meta}, Start: {s_metabolism}", True, (255, 255, 255))
-
-    # Blit (draw) them to the screen
-    x_pos = 10
-    y_pos = 10
-    line_height = 20
-
-    surface.blit(pop_text, (x_pos, y_pos))
-    surface.blit(speed_text, (x_pos, y_pos + line_height))
-    surface.blit(size_text, (x_pos, y_pos + line_height * 2))
-    surface.blit(sight_text, (x_pos, y_pos + line_height * 3))
-    surface.blit(meta_text, (x_pos, y_pos + line_height * 4))
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
 
@@ -143,10 +93,21 @@ clock = pygame.time.Clock()
 slimes_list = []
 berry_list = []
 #set start attributes
+
 start_size = 5
-
-
 count = 0
+
+#handle ui
+#menu
+game_state = "MENU"
+centre_x = screen_width//2
+stat_font = pygame.font.SysFont('Arial', 16, bold = True)
+start_btn = ui.Button(centre_x - 400, 150, 800, 200, "start", (0,200,0), (0,150,0), stat_font)
+settings_btn = ui.Button(centre_x -400, 400, 800, 200, "settings", (0,200,0), (0,150,0), stat_font)
+exit_btn = ui.Button(centre_x -400, 650, 800, 200, "exit", (0,200,0), (0,150,0), stat_font)
+#game
+speed_slider = ui.Slider(20,150,200,20,10,1000,60,"speed","blue")
+
 
 for i in range(50):
     Aberry = [berry.Berry(regen_time=500,
@@ -156,7 +117,7 @@ for i in range(50):
                    cy=random.randint(start_size,screen.get_height()-start_size)),0]
     berry_list.append(Aberry)
 #create slimes at start
-for i in range(10):
+for i in range(0):
     my_slime = [Oslime.Slime(speed=1,
                  max_hunger=10,
                  metabolism=100,
@@ -188,69 +149,89 @@ for i in range(10):
     slimes_list.append(my_slime2)
 
 #find starting averages
-start_avgs = get_averages(slimes_list)
+start_avgs = ui.get_averages(slimes_list)
 #while the program is playing
 
 while running:
     # 1. Event handling
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    # 2. Update game state
-    slimes_to_remove = []  # Create an empty list to hold dead slimes
-
-    for slime in slimes_list:
-
-
-        # Update the slime's state
-        partner = slime[0].move(slimes_list)
-        slime[0].eat()
-        slime[0].move(slimes_list)
-        slime[1] = slime[0].lose_hunger(slime[1])
-        if partner is not None:
-            if slime[0].Can_copy and partner.Can_copy:
-                slime[0].Can_copy = False
-                partner.Can_copy = False
-                new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
-                new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
-                     max_hunger=new_slime_attributes[1],
-                     metabolism=new_slime_attributes[2],
-                    current_hunger=new_slime_attributes[3],
-                     colour=new_slime_attributes[4],
-                    size=new_slime_attributes[5],
-                     sight=new_slime_attributes[7],
-                     agression=new_slime_attributes[6],
-                     cx=new_slime_attributes[8],
-                     cy=new_slime_attributes[9],
-                    dead=new_slime_attributes[10],
-                     berries=new_slime_attributes[11])
-                ,0]
-                slimes_list.append(new_slime)
-                slime[0].current_hunger = slime[0].current_hunger * 0.6
-                partner.current_hunger = partner.current_hunger * 0.6
-                partner = None
-        # If the slime is dead, add it to our removal list
-        if slime[0].dead:
-            slimes_to_remove.append(slime)
-
-    # 3. Now, safely remove the dead slimes AFTER the main loop is done
-    for dead_slime in slimes_to_remove:
-        slimes_list.remove(dead_slime)
-    for berry_data in berry_list:
-        berry_data[1] = berry_data[0].reset(berry_data[1])
+        if game_state == "MENU":
+            if start_btn.isclicked(event):
+                game_state = "GAME"
+            elif settings_btn.isclicked(event):
+                game_state = "SETTINGS"
+            elif exit_btn.isclicked(event):
+                running = False
 
     screen.fill((0, 0, 0))
 
-    for berry_data in berry_list:
-        berry_data[0].create()
+    if game_state == "MENU":
+        start_btn.draw(screen)
+        settings_btn.draw(screen)
+        exit_btn.draw(screen)
+    # 2. Update game state
+    elif game_state == "GAME":
+        slimes_to_remove = []  # Create an empty list to hold dead slimes
 
-    for slime_data in slimes_list:
-        slime_data[0].create()
-    draw_stats(screen,stat_font,slimes_list,start_avgs)
+        for slime in slimes_list:
+
+            speed_slider.handle_event(event)
+            # Update the slime's state
+            partner = slime[0].move(slimes_list)
+            slime[0].eat()
+            slime[0].move(slimes_list)
+            slime[1] = slime[0].lose_hunger(slime[1])
+            if partner is not None:
+                if slime[0].Can_copy and partner.Can_copy:
+                    slime[0].Can_copy = False
+                    partner.Can_copy = False
+                    new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
+                    new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
+                         max_hunger=new_slime_attributes[1],
+                         metabolism=new_slime_attributes[2],
+                        current_hunger=new_slime_attributes[3],
+                         colour=new_slime_attributes[4],
+                        size=new_slime_attributes[5],
+                         sight=new_slime_attributes[7],
+                         agression=new_slime_attributes[6],
+                         cx=new_slime_attributes[8],
+                         cy=new_slime_attributes[9],
+                        dead=new_slime_attributes[10],
+                         berries=new_slime_attributes[11])
+                    ,0]
+                    slimes_list.append(new_slime)
+                    slime[0].current_hunger = slime[0].current_hunger * 0.6
+                    partner.current_hunger = partner.current_hunger * 0.6
+                    partner = None
+            # If the slime is dead, add it to our removal list
+            if slime[0].dead:
+                slimes_to_remove.append(slime)
+
+        # 3. Now, safely remove the dead slimes AFTER the main loop is done
+        for dead_slime in slimes_to_remove:
+            slimes_list.remove(dead_slime)
+        for berry_data in berry_list:
+            berry_data[1] = berry_data[0].reset(berry_data[1])
+
+        screen.fill((0, 0, 0))
+
+        for berry_data in berry_list:
+            berry_data[0].create()
+
+        for slime_data in slimes_list:
+            slime_data[0].create()
+
+        speed_slider.draw(screen,stat_font)
+
+        ui.draw_stats(screen,stat_font,slimes_list,start_avgs)
     # 5. Update the display
     pygame.display.flip()
-    clock.tick(60)
+
+    clock.tick(int(speed_slider.val))
 
 # Quit Pygame when the loop ends
 pygame.quit()
