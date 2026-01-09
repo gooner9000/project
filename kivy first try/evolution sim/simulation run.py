@@ -107,49 +107,45 @@ settings_btn = ui.Button(centre_x -400, 400, 800, 200, "settings", (0,200,0), (0
 exit_btn = ui.Button(centre_x -400, 650, 800, 200, "exit", (0,200,0), (0,150,0), stat_font)
 #game
 speed_slider = ui.Slider(20,150,200,20,10,1000,60,"speed","blue")
+#settings
+size_slider = ui.Slider(centre_x-100,150,200,20,1,20,5,"size","blue")
+nslimes_slider = ui.Slider(centre_x-100,200,200,20,1,50,5,"num of slimes","blue")
+nberries_slider = ui.Slider(centre_x-100,250,200,20,10,200,80,"num of berries","blue")
+back_button = ui.Button(centre_x - 200, 700, 400, 100, "back", (0,200,0), (0,150,0), stat_font)
+
+def start_simulation(berry_num,slime_num,slime_size):
+    slimes_list.clear()
+    berry_list.clear()
+
+    for i in range(berry_num):
+        Aberry = [berry.Berry(regen_time=500,
+                       available=True,
+                       size=3,
+                       cx=random.randint(start_size,screen.get_width()-start_size),
+                       cy=random.randint(start_size,screen.get_height()-start_size)),0]
+        berry_list.append(Aberry)
+    #create slimes at start
 
 
-for i in range(50):
-    Aberry = [berry.Berry(regen_time=500,
-                   available=True,
-                   size=2,
-                   cx=random.randint(start_size,screen.get_width()-start_size),
-                   cy=random.randint(start_size,screen.get_height()-start_size)),0]
-    berry_list.append(Aberry)
-#create slimes at start
-for i in range(0):
-    my_slime = [Oslime.Slime(speed=1,
-                 max_hunger=10,
-                 metabolism=100,
-                 current_hunger=10,
-                 colour=(150,20,20),
-                 size=start_size,
-                 sight=50,
-                 agression=1,
-                 cx=random.randint(start_size,screen.get_width()-start_size),
-                 cy=random.randint(start_size,screen.get_height()-start_size),
-                 dead=False,
-                 berries=berry_list)
-             ,0]
-    slimes_list.append(my_slime)
-for i in range(10):
-    my_slime2 = [Oslime.Slime(speed=0.5,
-                     max_hunger=10,
-                     metabolism=150,
-                    current_hunger=10,
-                     colour=(0,150,50),
-                    size=start_size,
-                     sight=50,
-                     agression=1,
-                     cx=random.randint(start_size,screen.get_width()-start_size),
-                     cy=random.randint(start_size,screen.get_height()-start_size),
-                    dead=False,
-                     berries=berry_list)
-                ,0]
-    slimes_list.append(my_slime2)
+    for i in range(slime_num):
+        my_slime = [Oslime.Slime(speed=0.5,
+                         max_hunger=10,
+                         metabolism=150,
+                        current_hunger=10,
+                         colour=(0,150,50),
+                        size=slime_size,
+                         sight=50,
+                         agression=1,
+                         cx=random.randint(start_size,screen.get_width()-start_size),
+                         cy=random.randint(start_size,screen.get_height()-start_size),
+                        dead=False,
+                         berries=berry_list)
+                    ,0]
+        slimes_list.append(my_slime)
 
-#find starting averages
-start_avgs = ui.get_averages(slimes_list)
+    #find starting averages
+    start_avgs = ui.get_averages(slimes_list)
+    return start_avgs,slimes_list,berry_list
 #while the program is playing
 
 while running:
@@ -166,13 +162,35 @@ while running:
                 game_state = "SETTINGS"
             elif exit_btn.isclicked(event):
                 running = False
-
+        if game_state == "SETTINGS" or game_state == "GAME":
+            if back_button.isclicked(event):
+                game_state = "MENU"
     screen.fill((0, 0, 0))
 
     if game_state == "MENU":
         start_btn.draw(screen)
         settings_btn.draw(screen)
         exit_btn.draw(screen)
+    if game_state == "SETTINGS":
+        #size settings
+        size_slider.handle_event(event)
+        size_slider.draw(screen,stat_font)
+        start_size = int(size_slider.val)
+        #Nslimes settings
+        nslimes_slider.handle_event(event)
+        nslimes_slider.draw(screen,stat_font)
+        slime_num = int(nslimes_slider.val)
+        #Nberries settings
+        nberries_slider.handle_event(event)
+        nberries_slider.draw(screen, stat_font)
+        berries_num = int(nberries_slider.val)
+        #back button
+        back_button.draw(screen)
+        #set starting parameters
+        starting_parameters = start_simulation(berries_num,slime_num,start_size)
+        start_avgs = starting_parameters[0]
+        slimes_list = starting_parameters[1]
+        berry_list = starting_parameters[2]
     # 2. Update game state
     elif game_state == "GAME":
         slimes_to_remove = []  # Create an empty list to hold dead slimes
@@ -226,7 +244,7 @@ while running:
             slime_data[0].create()
 
         speed_slider.draw(screen,stat_font)
-
+        back_button.draw(screen)
         ui.draw_stats(screen,stat_font,slimes_list,start_avgs)
     # 5. Update the display
     pygame.display.flip()
