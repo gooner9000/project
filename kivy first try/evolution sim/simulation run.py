@@ -70,7 +70,7 @@ def Create_new_slime(slime1,slime2,berry_list):
 
 
 
-    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
+    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')*2
     max_hunger = (slime1.max_hunger + slime2.max_hunger)/2 + calculate_mutation(slime1,slime2,'max_hunger')
     metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism')
     current_hunger = max_hunger*0.6
@@ -111,6 +111,7 @@ speed_slider = ui.Slider(20,150,200,20,10,1000,60,"speed","blue")
 size_slider = ui.Slider(centre_x-100,150,200,20,1,20,5,"size","blue")
 nslimes_slider = ui.Slider(centre_x-100,200,200,20,1,50,5,"num of slimes","blue")
 nberries_slider = ui.Slider(centre_x-100,250,200,20,10,200,80,"num of berries","blue")
+mutation_slider = ui.Slider(centre_x-100,300,200,20,0.1,2,0.2,"variation of mutations","blue")
 back_button = ui.Button(centre_x - 200, 700, 400, 100, "back", (0,200,0), (0,150,0), stat_font)
 
 def start_simulation(berry_num,slime_num,slime_size):
@@ -176,21 +177,31 @@ while running:
         size_slider.handle_event(event)
         size_slider.draw(screen,stat_font)
         start_size = int(size_slider.val)
+
         #Nslimes settings
         nslimes_slider.handle_event(event)
         nslimes_slider.draw(screen,stat_font)
         slime_num = int(nslimes_slider.val)
+
         #Nberries settings
         nberries_slider.handle_event(event)
         nberries_slider.draw(screen, stat_font)
         berries_num = int(nberries_slider.val)
+
+        #mutation value settings
+        mutation_slider.handle_event(event)
+        mutation_slider.draw(screen,stat_font)
+        mutation_value = float(mutation_slider.val)
+
         #back button
         back_button.draw(screen)
+
         #set starting parameters
         starting_parameters = start_simulation(berries_num,slime_num,start_size)
         start_avgs = starting_parameters[0]
         slimes_list = starting_parameters[1]
         berry_list = starting_parameters[2]
+
     # 2. Update game state
     elif game_state == "GAME":
         slimes_to_remove = []  # Create an empty list to hold dead slimes

@@ -44,7 +44,10 @@ class Slider:
         pygame.draw.rect(screen, (self.colour), handle_rect)
 
         # Draw the text label
-        label = font.render(f"{self.name}: {int(self.val)}", True, (self.colour))
+        if self.name == "variation of mutations":
+            label = font.render(f"{self.name}: {float(self.val):.2f}", True, (self.colour))
+        else:
+            label = font.render(f"{self.name}: {int(self.val)}", True, (self.colour))
         screen.blit(label, (self.rect.x, self.rect.y - 25))
 
 class Button:
