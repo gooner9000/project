@@ -49,7 +49,9 @@ def calculate_mutation(slime1, slime2, attribute_name):
     upper_bound = round(mutation_value * combined_val)
 
     return random.randint(lower_bound, upper_bound)
+
 def calculate_colour(slime1,slime2):
+
     colour0 = (slime1.colour[0] + slime2.colour[0])/2 + calculate_mutation(slime1,slime2,'colour0')
     if colour0 < 0:
         colour0 = 0
@@ -65,23 +67,24 @@ def calculate_colour(slime1,slime2):
         colour2 = 0
     if colour2 > 255:
         colour2 = 255
+
     return colour0, colour1, colour2
+
 def Create_new_slime(slime1,slime2,berry_list):
 
-
-
-    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')*2
-    max_hunger = (slime1.max_hunger + slime2.max_hunger)/2 + calculate_mutation(slime1,slime2,'max_hunger')
+    size = round((slime1.size + slime2.size) / 2) + calculate_mutation(slime1, slime2, 'size')
+    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')*10
+    max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger') + round(size/2)
     metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism')
     current_hunger = max_hunger*0.6
     colour = calculate_colour(slime1,slime2)
-    size = round((slime1.size + slime2.size)/2) + calculate_mutation(slime1,slime2,'size')
     agression = (slime1.agression + slime2.agression)/2 + calculate_mutation(slime1,slime2,'agression')
     sight = (slime1.sight + slime2.sight)/2 + calculate_mutation(slime1,slime2,'sight')
     cx = (slime1.cx + slime2.cx)/2
     cy = (slime1.cy + slime2.cy)/2
     dead = False
     berries = berry_list
+
     return speed,max_hunger,metabolism,current_hunger,colour,size,agression,sight,cx,cy,dead,berries
 
 #set screen size
@@ -98,6 +101,7 @@ start_size = 5
 count = 0
 
 #handle ui
+
 #menu
 game_state = "MENU"
 centre_x = screen_width//2
@@ -105,14 +109,16 @@ stat_font = pygame.font.SysFont('Arial', 16, bold = True)
 start_btn = ui.Button(centre_x - 400, 150, 800, 200, "start", (0,200,0), (0,150,0), stat_font)
 settings_btn = ui.Button(centre_x -400, 400, 800, 200, "settings", (0,200,0), (0,150,0), stat_font)
 exit_btn = ui.Button(centre_x -400, 650, 800, 200, "exit", (0,200,0), (0,150,0), stat_font)
+
 #game
 speed_slider = ui.Slider(20,150,200,20,10,1000,60,"speed","blue")
+
 #settings
 size_slider = ui.Slider(centre_x-100,150,200,20,1,20,5,"size","blue")
 nslimes_slider = ui.Slider(centre_x-100,200,200,20,1,50,5,"num of slimes","blue")
 nberries_slider = ui.Slider(centre_x-100,250,200,20,10,200,80,"num of berries","blue")
 mutation_slider = ui.Slider(centre_x-100,300,200,20,0.1,2,0.2,"variation of mutations","blue")
-back_button = ui.Button(centre_x - 200, 700, 400, 100, "back", (0,200,0), (0,150,0), stat_font)
+back_button = ui.Button(centre_x -600, 700, 100, 50, "back", (0,200,0), (0,150,0), stat_font)
 
 def start_simulation(berry_num,slime_num,slime_size):
     slimes_list.clear()
