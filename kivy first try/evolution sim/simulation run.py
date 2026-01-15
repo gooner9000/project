@@ -73,13 +73,14 @@ def calculate_colour(slime1,slime2):
 def Create_new_slime(slime1,slime2,berry_list):
 
     size = round((slime1.size + slime2.size) / 2) + calculate_mutation(slime1, slime2, 'size')
-    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')*10
+    speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
+    sight = (slime1.sight + slime2.sight) / 2 + calculate_mutation(slime1, slime2, 'sight')
     max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger') + round(size/2)
-    metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism')
+    metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism') - speed*100 - sight/2
     current_hunger = max_hunger*0.6
     colour = calculate_colour(slime1,slime2)
     agression = (slime1.agression + slime2.agression)/2 + calculate_mutation(slime1,slime2,'agression')
-    sight = (slime1.sight + slime2.sight)/2 + calculate_mutation(slime1,slime2,'sight')
+
     cx = (slime1.cx + slime2.cx)/2
     cy = (slime1.cy + slime2.cy)/2
     dead = False
@@ -137,11 +138,11 @@ def start_simulation(berry_num,slime_num,slime_size):
     for i in range(slime_num):
         my_slime = [Oslime.Slime(speed=0.5,
                          max_hunger=10,
-                         metabolism=150,
                         current_hunger=10,
                          colour=(0,150,50),
                         size=slime_size,
                          sight=50,
+                        metabolism=250 - 0.5*100 - 50/2,
                          agression=1,
                          cx=random.randint(start_size,screen.get_width()-start_size),
                          cy=random.randint(start_size,screen.get_height()-start_size),
