@@ -101,7 +101,7 @@ def get_averages(slimes):
         total_metabolism += s.metabolism
 
     # Calculate averages
-    avg_speed = round(total_speed / count, 2)
+    avg_speed = total_speed / count
     avg_size = round(total_size / count, 2)
     avg_sight = round(total_sight / count, 2)
     avg_meta = round(total_metabolism / count, 2)

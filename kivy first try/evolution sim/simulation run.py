@@ -112,7 +112,7 @@ settings_btn = ui.Button(centre_x -400, 400, 800, 200, "settings", (0,200,0), (0
 exit_btn = ui.Button(centre_x -400, 650, 800, 200, "exit", (0,200,0), (0,150,0), stat_font)
 
 #game
-speed_slider = ui.Slider(20,150,200,20,10,1000,60,"speed","blue")
+speed_slider = ui.Slider(20,150,200,20,10,200,60,"speed","blue")
 
 #settings
 size_slider = ui.Slider(centre_x-100,150,200,20,1,20,5,"size","blue")
@@ -136,7 +136,7 @@ def start_simulation(berry_num,slime_num,slime_size):
 
 
     for i in range(slime_num):
-        my_slime = [Oslime.Slime(speed=0.5,
+        my_slime = [Oslime.Slime(speed=0.2343,
                          max_hunger=10,
                         current_hunger=10,
                          colour=(0,150,50),
