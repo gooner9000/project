@@ -7,7 +7,7 @@ import math
 import Oslime
 import berry
 import ui
-
+import plotting
 
 pygame.init()
 pygame.font.init()
@@ -205,10 +205,16 @@ while running:
 
         #set starting parameters
         starting_parameters = start_simulation(berries_num,slime_num,start_size)
+
         start_avgs = starting_parameters[0]
         slimes_list = starting_parameters[1]
         berry_list = starting_parameters[2]
-
+        #reset graphs
+        timer = 0
+        sec_timer = 0
+        time_plot = []
+        population_plot = []
+        metabolism_plot = []
     # 2. Update game state
     elif game_state == "GAME":
         slimes_to_remove = []  # Create an empty list to hold dead slimes
@@ -264,6 +270,17 @@ while running:
         speed_slider.draw(screen,stat_font)
         back_button.draw(screen)
         ui.draw_stats(screen,stat_font,slimes_list,start_avgs)
+
+        #print graphs
+
+        if timer%60 == 0:#makes it so only creates a graph every 60 frames
+            sec_timer += 1
+            plotting.plot(time_plot,population_plot)
+
+        population_plot.append(len(slimes_list))
+        metabolism_plot.append(ui.get_averages(slimes_list)[4])
+        time_plot.append(sec_timer)
+        timer += 1
     # 5. Update the display
     pygame.display.flip()
 
