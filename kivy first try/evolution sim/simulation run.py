@@ -275,7 +275,7 @@ while running:
 
         if timer%60 == 0:#makes it so only creates a graph every 60 frames
             sec_timer += 1
-            plotting.plot(time_plot,population_plot)
+            plotting.plot(time_plot,population_plot,"time/s","population")
 
         population_plot.append(len(slimes_list))
         metabolism_plot.append(ui.get_averages(slimes_list)[4])
