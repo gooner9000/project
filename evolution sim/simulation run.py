@@ -107,19 +107,19 @@ count = 0
 game_state = "MENU"
 centre_x = screen_width//2
 stat_font = pygame.font.SysFont('Arial', 16, bold = True)
-start_btn = ui.Button(centre_x - 400, 150, 800, 200, "start", (0,200,0), (0,150,0), stat_font)
-settings_btn = ui.Button(centre_x -400, 400, 800, 200, "settings", (0,200,0), (0,150,0), stat_font)
-exit_btn = ui.Button(centre_x -400, 650, 800, 200, "exit", (0,200,0), (0,150,0), stat_font)
+start_btn = ui.Button(centre_x - 400, 150, 800, 200, "start", (0, 200, 0), (0, 150, 0), stat_font)
+settings_btn = ui.Button(centre_x - 400, 400, 800, 200, "settings", (0, 200, 0), (0, 150, 0), stat_font)
+exit_btn = ui.Button(centre_x - 400, 650, 800, 200, "exit", (0, 200, 0), (0, 150, 0), stat_font)
 
 #game
-speed_slider = ui.Slider(20,150,200,20,10,200,60,"speed","blue")
+speed_slider = ui.Slider(20, 150, 200, 20, 10, 200, 60, "speed", "blue")
 
 #settings
-size_slider = ui.Slider(centre_x-100,150,200,20,1,20,5,"size","blue")
-nslimes_slider = ui.Slider(centre_x-100,200,200,20,1,50,5,"num of slimes","blue")
-nberries_slider = ui.Slider(centre_x-100,250,200,20,10,200,80,"num of berries","blue")
-mutation_slider = ui.Slider(centre_x-100,300,200,20,0.1,2,0.2,"variation of mutations","blue")
-back_button = ui.Button(centre_x -600, 700, 100, 50, "back", (0,200,0), (0,150,0), stat_font)
+size_slider = ui.Slider(centre_x - 100, 150, 200, 20, 1, 20, 5, "size", "blue")
+nslimes_slider = ui.Slider(centre_x - 100, 200, 200, 20, 1, 50, 5, "num of slimes", "blue")
+nberries_slider = ui.Slider(centre_x - 100, 250, 200, 20, 10, 200, 80, "num of berries", "blue")
+mutation_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 2, 0.2, "variation of mutations", "blue")
+back_button = ui.Button(centre_x - 600, 700, 100, 50, "back", (0, 200, 0), (0, 150, 0), stat_font)
 
 def start_simulation(berry_num,slime_num,slime_size):
     slimes_list.clear()
@@ -127,28 +127,28 @@ def start_simulation(berry_num,slime_num,slime_size):
 
     for i in range(berry_num):
         Aberry = [berry.Berry(regen_time=500,
-                       available=True,
-                       size=3,
-                       cx=random.randint(start_size,screen.get_width()-start_size),
-                       cy=random.randint(start_size,screen.get_height()-start_size)),0]
+                              available=True,
+                              size=3,
+                              cx=random.randint(start_size,screen.get_width()-start_size),
+                              cy=random.randint(start_size,screen.get_height()-start_size)), 0]
         berry_list.append(Aberry)
     #create slimes at start
 
 
     for i in range(slime_num):
         my_slime = [Oslime.Slime(speed=0.2343,
-                         max_hunger=10,
-                        current_hunger=10,
-                         colour=(0,150,50),
-                        size=slime_size,
-                         sight=50,
-                        metabolism=250 - 0.5*100 - 50/2,
-                         agression=1,
-                         cx=random.randint(start_size,screen.get_width()-start_size),
-                         cy=random.randint(start_size,screen.get_height()-start_size),
-                        dead=False,
-                         berries=berry_list)
-                    ,0]
+                                 max_hunger=10,
+                                 current_hunger=10,
+                                 colour=(0,150,50),
+                                 size=slime_size,
+                                 sight=50,
+                                 metabolism=250 - 0.5*100 - 50/2,
+                                 agression=1,
+                                 cx=random.randint(start_size,screen.get_width()-start_size),
+                                 cy=random.randint(start_size,screen.get_height()-start_size),
+                                 dead=False,
+                                 berries=berry_list)
+                    , 0]
         slimes_list.append(my_slime)
 
     #find starting averages
@@ -233,18 +233,18 @@ while running:
                     partner.Can_copy = False
                     new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
                     new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
-                         max_hunger=new_slime_attributes[1],
-                         metabolism=new_slime_attributes[2],
-                        current_hunger=new_slime_attributes[3],
-                         colour=new_slime_attributes[4],
-                        size=new_slime_attributes[5],
-                         sight=new_slime_attributes[7],
-                         agression=new_slime_attributes[6],
-                         cx=new_slime_attributes[8],
-                         cy=new_slime_attributes[9],
-                        dead=new_slime_attributes[10],
-                         berries=new_slime_attributes[11])
-                    ,0]
+                                              max_hunger=new_slime_attributes[1],
+                                              metabolism=new_slime_attributes[2],
+                                              current_hunger=new_slime_attributes[3],
+                                              colour=new_slime_attributes[4],
+                                              size=new_slime_attributes[5],
+                                              sight=new_slime_attributes[7],
+                                              agression=new_slime_attributes[6],
+                                              cx=new_slime_attributes[8],
+                                              cy=new_slime_attributes[9],
+                                              dead=new_slime_attributes[10],
+                                              berries=new_slime_attributes[11])
+                    , 0]
                     slimes_list.append(new_slime)
                     slime[0].current_hunger = slime[0].current_hunger * 0.6
                     partner.current_hunger = partner.current_hunger * 0.6
@@ -269,13 +269,13 @@ while running:
 
         speed_slider.draw(screen,stat_font)
         back_button.draw(screen)
-        ui.draw_stats(screen,stat_font,slimes_list,start_avgs)
+        ui.draw_stats(screen, stat_font, slimes_list, start_avgs)
 
         #print graphs
 
         if timer%60 == 0:#makes it so only creates a graph every 60 frames
             sec_timer += 1
-            plotting.plot(time_plot,population_plot,"time/s","population")
+            plotting.plot(time_plot, population_plot, "time/s", "population")
 
         population_plot.append(len(slimes_list))
         metabolism_plot.append(ui.get_averages(slimes_list)[4])
