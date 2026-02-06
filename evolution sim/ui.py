@@ -76,7 +76,7 @@ class Button:
 
 
 
-def get_averages(slimes):
+def get_averages(slimes,surface,font):
     count = len(slimes)
 
     if count == 0:
@@ -112,7 +112,7 @@ def get_averages(slimes):
 
 def draw_stats(surface, font, slimes, start_stats):
     s_count, s_speed, s_size, s_sight, s_metabolism = start_stats
-    count, avg_speed, avg_size, avg_sight, avg_meta = get_averages(slimes)
+    count, avg_speed, avg_size, avg_sight, avg_meta = get_averages(slimes,surface,font)
     # Create text surfaces
     # render(Text, Antialias, Color)
     pop_text = font.render(f"Population: {count}, Start: {s_count}", True, (255, 255, 255))

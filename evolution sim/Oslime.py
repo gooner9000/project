@@ -24,7 +24,8 @@ class Slime:
                  cx,
                  cy,
                  dead,
-                 berries):
+                 berries,
+                 lifespan):
         self.dead = dead
         self.berries = berries
         self.Can_copy = False
@@ -39,9 +40,12 @@ class Slime:
         self.cx = cx
         self.cy = cy
         self.posX,self.posY = self.selectlocation([])
+        self.lifespan = lifespan
 
-
-
+    def reducelifespan(self):
+        self.lifespan -= 1
+        if self.lifespan < 0:
+            self.dead = True
     #function to create slimes at start
     def create(self):
 
@@ -117,7 +121,7 @@ class Slime:
         return locationX,locationY
 
 
-    def die(self):
+    def diehunger(self):
         if self.current_hunger <= 0:
 
             return True
@@ -127,7 +131,7 @@ class Slime:
     def lose_hunger(self,count):
         count += 1
         if count >= self.metabolism:
-            self.dead = self.die()
+            self.dead = self.diehunger()
             self.current_hunger -= 1
             print(f"current hunger: {self.current_hunger}")
             count = 0

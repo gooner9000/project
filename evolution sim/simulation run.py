@@ -80,13 +80,13 @@ def Create_new_slime(slime1,slime2,berry_list):
     current_hunger = max_hunger*0.6
     colour = calculate_colour(slime1,slime2)
     agression = (slime1.agression + slime2.agression)/2 + calculate_mutation(slime1,slime2,'agression')
-
+    lifespan = (slime1.lifespan + slime2.lifespan)/2 + calculate_mutation(slime1,slime2,'lifespan')
     cx = (slime1.cx + slime2.cx)/2
     cy = (slime1.cy + slime2.cy)/2
     dead = False
     berries = berry_list
 
-    return speed,max_hunger,metabolism,current_hunger,colour,size,agression,sight,cx,cy,dead,berries
+    return speed,max_hunger,metabolism,current_hunger,colour,size,agression,sight,cx,cy,dead,berries,lifespan
 
 #set screen size
 
@@ -147,12 +147,13 @@ def start_simulation(berry_num,slime_num,slime_size):
                                  cx=random.randint(start_size,screen.get_width()-start_size),
                                  cy=random.randint(start_size,screen.get_height()-start_size),
                                  dead=False,
-                                 berries=berry_list)
+                                 berries=berry_list,
+                                 lifespan = random.randint(1500,2500))
                     , 0]
         slimes_list.append(my_slime)
 
     #find starting averages
-    start_avgs = ui.get_averages(slimes_list)
+    start_avgs = ui.get_averages(slimes_list,screen,stat_font)
     return start_avgs,slimes_list,berry_list
 #while the program is playing
 
@@ -227,6 +228,7 @@ while running:
             slime[0].eat()
             slime[0].move(slimes_list)
             slime[1] = slime[0].lose_hunger(slime[1])
+            slime[0].reducelifespan()
             if partner is not None:
                 if slime[0].Can_copy and partner.Can_copy:
                     slime[0].Can_copy = False
@@ -243,7 +245,8 @@ while running:
                                               cx=new_slime_attributes[8],
                                               cy=new_slime_attributes[9],
                                               dead=new_slime_attributes[10],
-                                              berries=new_slime_attributes[11])
+                                              berries=new_slime_attributes[11],
+                                              lifespan = new_slime_attributes[12])
                     , 0]
                     slimes_list.append(new_slime)
                     slime[0].current_hunger = slime[0].current_hunger * 0.6
@@ -269,7 +272,9 @@ while running:
 
         speed_slider.draw(screen,stat_font)
         back_button.draw(screen)
-        ui.draw_stats(screen, stat_font, slimes_list, start_avgs)
+        if slimes_list is not None:
+            ui.draw_stats(screen, stat_font, slimes_list, start_avgs)
+
 
         #print graphs
 
@@ -278,7 +283,7 @@ while running:
             plotting.plot(time_plot, population_plot, "time/s", "population")
 
         population_plot.append(len(slimes_list))
-        metabolism_plot.append(ui.get_averages(slimes_list)[4])
+        metabolism_plot.append(ui.get_averages(slimes_list,screen,stat_font)[4])
         time_plot.append(sec_timer)
         timer += 1
     # 5. Update the display
