@@ -148,7 +148,7 @@ def start_simulation(berry_num,slime_num,slime_size):
                                  cy=random.randint(start_size,screen.get_height()-start_size),
                                  dead=False,
                                  berries=berry_list,
-                                 lifespan = random.randint(1500,2500))
+                                 lifespan = random.randint(10500,10500))
                     , 0]
         slimes_list.append(my_slime)
 
@@ -272,7 +272,7 @@ while running:
 
         speed_slider.draw(screen,stat_font)
         back_button.draw(screen)
-        if slimes_list is not None:
+        if slimes_list != []:
             ui.draw_stats(screen, stat_font, slimes_list, start_avgs)
 
 
@@ -283,7 +283,8 @@ while running:
             plotting.plot(time_plot, population_plot, "time/s", "population")
 
         population_plot.append(len(slimes_list))
-        metabolism_plot.append(ui.get_averages(slimes_list,screen,stat_font)[4])
+        if slimes_list != []:
+            metabolism_plot.append(ui.get_averages(slimes_list,screen,stat_font)[4])
         time_plot.append(sec_timer)
         timer += 1
     # 5. Update the display
