@@ -11,6 +11,7 @@ def check_collision(x1,y1,x2,y2):
 screen_width = 1360
 screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
+
 class Slime:
     def __init__(self,
                  speed,
@@ -59,15 +60,16 @@ class Slime:
             return True
         else:
             return False
-    def Reproduce(self,slime):
-        print("reproducing")
+    def Reproduce(self,slime, debug=False):
+        if debug:
+            print("reproducing")
 
         self.Can_copy = True
         partner = slime
         return partner
     def Canreproduce(self):
         if self.current_hunger >= self.max_hunger * 0.7:
-            print("can reproduce")
+            #print("can reproduce")
             return True
         else:
             return False
@@ -91,26 +93,26 @@ class Slime:
         locationX = random.randint(self.size, screen_width - self.size)
         locationY = random.randint(self.size, screen_height - self.size)
         if not hungry and not repro_able:
-            print('not hungry')
-            print('cant reproduce')
+            #print('not hungry')
+            #print('cant reproduce')
             return locationX, locationY
         elif hungry:
-            print('hungry')
+            #print('hungry')
             #enter look for food state
             for berry in self.berries:
                 if self.Checkforberry(berry) == True:
                     locationX = berry[0].cx
                     locationY = berry[0].cy
-                    print('going towards berry')
+                    #print('going towards berry')
                     break
         elif repro_able:
-            print('can reproduce')
+            #print('can reproduce')
             #enter look for slime state
             for slime in slimes:
                 if self.Checkforslime(slime) == True and slime[0].Canreproduce():
                     locationX = slime[0].cx
                     locationY = slime[0].cy
-                    print('going towards slime')
+                    #print('going towards slime')
                     if check_collision(self.cx,self.cy,slime[0].cx,slime[0].cy):
                         self.Reproduce(slime[0])
                     break
@@ -133,7 +135,7 @@ class Slime:
         if count >= self.metabolism:
             self.dead = self.diehunger()
             self.current_hunger -= 1
-            print(f"current hunger: {self.current_hunger}")
+            #print(f"current hunger: {self.current_hunger}")
             count = 0
         return count
 
@@ -150,7 +152,7 @@ class Slime:
             if not is_targeting_food:
                 for berry in self.berries:
                     if self.Checkforberry(berry):
-                        print("interupted going towards berry")
+                        #print("interupted going towards berry")
                         self.posX = berry[0].cx
                         self.posY = berry[0].cy
                         break
@@ -159,7 +161,7 @@ class Slime:
             #check if already targeting slime
             for slime in slimes:
                 if self.posX == slime[0].cx and self.posY == slime[0].cy:
-                    print("is already targeting")
+                    #print("is already targeting")
                     is_targeting_food = True
                     if check_collision(self.cx,self.cy,slime[0].cx,slime[0].cy):
                         partner = self.Reproduce(slime[0])
@@ -169,7 +171,7 @@ class Slime:
             if not is_targeting_slime:
                 for slime in slimes:
                     if self.Checkforslime(slime) and slime[0].Canreproduce():
-                        print("interupted going towards slime")
+                        #print("interupted going towards slime")
                         self.posX = slime[0].cx
                         self.posY = slime[0].cy
                         if check_collision(self.cx, self.cy, slime[0].cx, slime[0].cy):
@@ -214,5 +216,5 @@ class Slime:
                     if self.current_hunger > self.max_hunger:
                         self.current_hunger = self.max_hunger
                     berry[0].available = False  # The slime eats the berry
-                    print(f"Yum! Hunger is now {self.current_hunger}")
+                    #print(f"Yum! Hunger is now {self.current_hunger}")
                     break  # Stop checking after eating one berry per frame

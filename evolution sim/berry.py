@@ -2,9 +2,9 @@ import pygame
 import math
 import random
 
-screen_width = 1360
-screen_height = 980
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen_widthB = 1360
+screen_heightB = 980
+screenB = pygame.display.set_mode((screen_widthB, screen_heightB))
 
 class Berry:
     def __init__(self,
@@ -21,7 +21,8 @@ class Berry:
 
     def create(self):
         if self.available == True:
-            pygame.draw.circle(screen, 'pink', (self.cx, self.cy), self.size)
+            pygame.draw.circle(screenB, 'pink', (self.cx, self.cy), self.size)
+
     def reset(self,count):
         if self.available == False:
             count+=1

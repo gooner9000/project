@@ -2,9 +2,10 @@
 
 #imports
 import random
+import Oslime
 import pygame
 import math
-import Oslime
+
 import berry
 import ui
 import plotting
@@ -14,8 +15,8 @@ pygame.font.init()
 
 
 #set screen size
-screen_width = 1360
-screen_height = 980
+screen_width = 2000
+screen_height = 1000
 screen = pygame.display.set_mode((screen_width, screen_height))
 mutation_value = 0.2
 
