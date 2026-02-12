@@ -56,7 +56,7 @@ class Slime:
         #visualize sight
         #pygame.draw.circle(screen, self.colour, (self.cx, self.cy), self.sight, 1)
     def Ishungry(self):
-        if self.current_hunger < self.max_hunger * 0.5:
+        if self.current_hunger < (self.max_hunger + round(self.size/2)) * 0.5:
             return True
         else:
             return False
@@ -68,7 +68,7 @@ class Slime:
         partner = slime
         return partner
     def Canreproduce(self):
-        if self.current_hunger >= self.max_hunger * 0.7:
+        if self.current_hunger >= (self.max_hunger + round(self.size/2)) * 0.7:
             #print("can reproduce")
             return True
         else:
@@ -132,10 +132,10 @@ class Slime:
 
     def lose_hunger(self,count):
         count += 1
-        if count >= self.metabolism:
+        if count >= self.metabolism - self.speed*100 - self.sight/2:
             self.dead = self.diehunger()
             self.current_hunger -= 1
-            #print(f"current hunger: {self.current_hunger}")
+            print(f"current hunger: {self.current_hunger}")
             count = 0
         return count
 
@@ -213,8 +213,8 @@ class Slime:
                 if distance < self.size + berry[0].size:
                     self.current_hunger += 5
                     # Cap hunger at max_hunger
-                    if self.current_hunger > self.max_hunger:
-                        self.current_hunger = self.max_hunger
+                    if self.current_hunger > self.max_hunger + round(self.size/2):
+                        self.current_hunger = self.max_hunger + round(self.size/2)
                     berry[0].available = False  # The slime eats the berry
                     #print(f"Yum! Hunger is now {self.current_hunger}")
                     break  # Stop checking after eating one berry per frame

@@ -76,8 +76,8 @@ def Create_new_slime(slime1,slime2,berry_list):
     size = round((slime1.size + slime2.size) / 2) + calculate_mutation(slime1, slime2, 'size')
     speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
     sight = (slime1.sight + slime2.sight) / 2 + calculate_mutation(slime1, slime2, 'sight')
-    max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger') + round(size/2)
-    metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism') - speed*100 - sight/2
+    max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger')
+    metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism')
     current_hunger = max_hunger*0.6
     colour = calculate_colour(slime1,slime2)
     agression = (slime1.agression + slime2.agression)/2 + calculate_mutation(slime1,slime2,'agression')
@@ -143,13 +143,13 @@ def start_simulation(berry_num,slime_num,slime_size):
                                  colour=(0,150,50),
                                  size=slime_size,
                                  sight=50,
-                                 metabolism=250 - 0.5*100 - 50/2,
+                                 metabolism=200,
                                  agression=1,
                                  cx=random.randint(start_size,Oslime.screen_widthS-start_size),
                                  cy=random.randint(start_size,Oslime.screen_heightS-start_size),
                                  dead=False,
                                  berries=berry_list,
-                                 lifespan = random.randint(10500,10500))
+                                 lifespan = random.randint(9000,10500))
                     , 0]
         slimes_list.append(my_slime)
 
@@ -283,15 +283,23 @@ while running:
         if timer%60 == 0:#makes it so only creates a graph every 60 frames
             sec_timer += 1
             plotting.plot(time_plot, population_plot, "time/s", "population")
+            plotting.plot(time_plot, metabolism_plot, "time/s", "metabolism")
+            # load the image
+            pop_graph_image = pygame.image.load('populationplot.png')
+            pop_graph_image = pygame.transform.scale(pop_graph_image, (400, 300))
+
+            met_graph_image = pygame.image.load('metabolismplot.png')
+            met_graph_image = pygame.transform.scale(met_graph_image, (400, 300))
+
 
         population_plot.append(len(slimes_list))
         if slimes_list != []:
             metabolism_plot.append(ui.get_averages(slimes_list,screen,stat_font)[4])
         time_plot.append(sec_timer)
         timer += 1
-        pop_graph_image = pygame.image.load('populationplot.png')
-        screen.blit(pop_graph_image,(1400,0))
-
+        #display the graph
+        screen.blit(pop_graph_image, (1380, 0))
+        screen.blit(met_graph_image, (1380, 300))
     # 5. Update the display
     pygame.display.flip()
 
