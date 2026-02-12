@@ -14,7 +14,7 @@ def plot(x_axis_list,y_axis_list,xlabel,ylabel):
     plt.plot(x_point,y_point,linestyle = 'dashed')
 
     #plt.show()
-    plt.savefig("plot.png")
+    plt.savefig(f"{ylabel}plot.png")
 
 x_list = []
 y_list = []

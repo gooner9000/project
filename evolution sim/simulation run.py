@@ -15,8 +15,8 @@ pygame.font.init()
 
 
 #set screen size
-screen_width = 2000
-screen_height = 1000
+screen_width = 1800
+screen_height = 980
 screen = pygame.display.set_mode((screen_width, screen_height))
 mutation_value = 0.2
 
@@ -114,13 +114,13 @@ exit_btn = ui.Button(centre_x - 400, 650, 800, 200, "exit", (0, 200, 0), (0, 150
 
 #game
 speed_slider = ui.Slider(20, 150, 200, 20, 10, 200, 60, "speed", "blue")
-
+simulation_box = ui.Box(0,0,1360,980,"blue")
 #settings
 size_slider = ui.Slider(centre_x - 100, 150, 200, 20, 1, 20, 5, "size", "blue")
 nslimes_slider = ui.Slider(centre_x - 100, 200, 200, 20, 1, 50, 5, "num of slimes", "blue")
 nberries_slider = ui.Slider(centre_x - 100, 250, 200, 20, 10, 200, 80, "num of berries", "blue")
 mutation_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 2, 0.2, "variation of mutations", "blue")
-back_button = ui.Button(centre_x - 600, 700, 100, 50, "back", (0, 200, 0), (0, 150, 0), stat_font)
+back_button = ui.Button(centre_x - 800, 200, 100, 50, "back", (0, 150, 0), (0, 200, 0), stat_font)
 
 def start_simulation(berry_num,slime_num,slime_size):
     slimes_list.clear()
@@ -130,8 +130,8 @@ def start_simulation(berry_num,slime_num,slime_size):
         Aberry = [berry.Berry(regen_time=500,
                               available=True,
                               size=3,
-                              cx=random.randint(start_size,screen.get_width()-start_size),
-                              cy=random.randint(start_size,screen.get_height()-start_size)), 0]
+                              cx=random.randint(start_size,berry.screen_widthB-start_size),
+                              cy=random.randint(start_size,berry.screen_heightB-start_size)), 0]
         berry_list.append(Aberry)
     #create slimes at start
 
@@ -145,8 +145,8 @@ def start_simulation(berry_num,slime_num,slime_size):
                                  sight=50,
                                  metabolism=250 - 0.5*100 - 50/2,
                                  agression=1,
-                                 cx=random.randint(start_size,screen.get_width()-start_size),
-                                 cy=random.randint(start_size,screen.get_height()-start_size),
+                                 cx=random.randint(start_size,Oslime.screen_widthS-start_size),
+                                 cy=random.randint(start_size,Oslime.screen_heightS-start_size),
                                  dead=False,
                                  berries=berry_list,
                                  lifespan = random.randint(10500,10500))
@@ -273,6 +273,7 @@ while running:
 
         speed_slider.draw(screen,stat_font)
         back_button.draw(screen)
+        simulation_box.draw(screen)
         if slimes_list != []:
             ui.draw_stats(screen, stat_font, slimes_list, start_avgs)
 
@@ -288,6 +289,9 @@ while running:
             metabolism_plot.append(ui.get_averages(slimes_list,screen,stat_font)[4])
         time_plot.append(sec_timer)
         timer += 1
+        pop_graph_image = pygame.image.load('populationplot.png')
+        screen.blit(pop_graph_image,(1400,0))
+
     # 5. Update the display
     pygame.display.flip()
 

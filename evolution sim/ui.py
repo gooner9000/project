@@ -132,3 +132,10 @@ def draw_stats(surface, font, slimes, start_stats):
     surface.blit(sight_text, (x_pos, y_pos + line_height * 3))
     surface.blit(meta_text, (x_pos, y_pos + line_height * 4))
 
+class Box:
+    def __init__(self, x, y, width, height, colour):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.colour = colour
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.colour, self.rect, width=10)

@@ -8,9 +8,9 @@ def check_collision(x1,y1,x2,y2):
     if calculate_distance(x1,y1,x2,y2) <= 3:
         return True
     return False
-screen_width = 1360
-screen_height = 980
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen_widthS = 1360
+screen_heightS = 980
+screenS = pygame.display.set_mode((screen_widthS, screen_heightS))
 
 class Slime:
     def __init__(self,
@@ -50,7 +50,7 @@ class Slime:
     #function to create slimes at start
     def create(self):
 
-        pygame.draw.circle(screen,self.colour,(self.cx,self.cy),self.size)
+        pygame.draw.circle(screenS, self.colour, (self.cx, self.cy), self.size)
         #visiulize where its going to go
         #pygame.draw.line(screen, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
         #visualize sight
@@ -90,8 +90,8 @@ class Slime:
     def selectlocation(self,slimes):
         hungry = self.Ishungry()
         repro_able = self.Canreproduce()
-        locationX = random.randint(self.size, screen_width - self.size)
-        locationY = random.randint(self.size, screen_height - self.size)
+        locationX = random.randint(self.size, screen_widthS - self.size)
+        locationY = random.randint(self.size, screen_heightS - self.size)
         if not hungry and not repro_able:
             #print('not hungry')
             #print('cant reproduce')
