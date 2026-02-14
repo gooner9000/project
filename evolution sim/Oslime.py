@@ -2,6 +2,8 @@ import math
 import pygame
 import random
 
+#TOTAL_NATDEATH = 0
+#TOTAL_STARVEDEATH = 0
 def calculate_distance(x1, y1, x2, y2):
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))
 def check_collision(x1,y1,x2,y2):
@@ -20,7 +22,7 @@ class Slime:
                  current_hunger,
                  colour,
                  size,
-                 agression,
+                 aggression,
                  sight,
                  cx,
                  cy,
@@ -36,17 +38,21 @@ class Slime:
         self.current_hunger = current_hunger
         self.colour = colour
         self.size = size
-        self.agression = agression
+        self.aggression = aggression
         self.sight = sight
         self.cx = cx
         self.cy = cy
         self.posX,self.posY = self.selectlocation([])
         self.lifespan = lifespan
+        self.age = 0
 
     def reducelifespan(self):
-        self.lifespan -= 1
-        if self.lifespan < 0:
+        self.age += 1
+        if self.age >= self.lifespan:
             self.dead = True
+            return True
+        return False
+
     #function to create slimes at start
     def create(self):
 
@@ -61,8 +67,8 @@ class Slime:
         else:
             return False
     def Reproduce(self,slime, debug=False):
-        if debug:
-            print("reproducing")
+
+        #print("reproducing")
 
         self.Can_copy = True
         partner = slime
@@ -125,7 +131,8 @@ class Slime:
 
     def diehunger(self):
         if self.current_hunger <= 0:
-
+            #TOTAL_STARVEDEATH += 1
+            #print(f"total deaths by starvation = {TOTAL_STARVEDEATH}")
             return True
         return False
 
@@ -135,7 +142,7 @@ class Slime:
         if count >= self.metabolism - self.speed*100 - self.sight/2:
             self.dead = self.diehunger()
             self.current_hunger -= 1
-            print(f"current hunger: {self.current_hunger}")
+            #print(f"current hunger: {self.current_hunger}")
             count = 0
         return count
 

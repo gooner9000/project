@@ -90,6 +90,7 @@ def get_averages(slimes,surface,font):
     total_size = 0
     total_sight = 0
     total_metabolism = 0
+    total_age = 0
 
     # Sum up attributes
     for slime_data in slimes:
@@ -99,20 +100,22 @@ def get_averages(slimes,surface,font):
         total_size += s.size
         total_sight += s.sight
         total_metabolism += s.metabolism
+        total_age += s.age
 
     # Calculate averages
     avg_speed = total_speed / count
     avg_size = round(total_size / count, 2)
     avg_sight = round(total_sight / count, 2)
     avg_meta = round(total_metabolism / count, 2)
+    avg_age = round(total_age / count, 2)
 
-    return count, avg_speed, avg_size, avg_sight, avg_meta
+    return count, avg_speed, avg_size, avg_sight, avg_meta, avg_age
 
 
 
-def draw_stats(surface, font, slimes, start_stats):
-    s_count, s_speed, s_size, s_sight, s_metabolism = start_stats
-    count, avg_speed, avg_size, avg_sight, avg_meta = get_averages(slimes,surface,font)
+def draw_stats(surface, font, slimes, start_stats, total_death_from_age):
+    s_count, s_speed, s_size, s_sight, s_metabolism, s_age = start_stats
+    count, avg_speed, avg_size, avg_sight, avg_meta, avg_age = get_averages(slimes,surface,font)
     # Create text surfaces
     # render(Text, Antialias, Color)
     pop_text = font.render(f"Population: {count}, Start: {s_count}", True, (255, 255, 255))
@@ -120,7 +123,8 @@ def draw_stats(surface, font, slimes, start_stats):
     size_text = font.render(f"Avg Size: {avg_size}, Start: {s_size}", True, (255, 255, 255))
     sight_text = font.render(f"Avg Sight: {avg_sight}, Start: {s_sight}", True, (255, 255, 255))
     meta_text = font.render(f"Avg Metabolism: {avg_meta}, Start: {s_metabolism}", True, (255, 255, 255))
-
+    age_text = font.render(f"Avg age: {avg_age}, Start: {s_age}", True, (255, 255, 255))
+    agedeath_text = font.render(f"slimes Dead from age: {total_death_from_age} slimes", True, (255, 255, 255))
     # Blit (draw) them to the screen
     x_pos = 10
     y_pos = 10
@@ -131,7 +135,8 @@ def draw_stats(surface, font, slimes, start_stats):
     surface.blit(size_text, (x_pos, y_pos + line_height * 2))
     surface.blit(sight_text, (x_pos, y_pos + line_height * 3))
     surface.blit(meta_text, (x_pos, y_pos + line_height * 4))
-
+    surface.blit(age_text, (x_pos, y_pos + line_height * 5))
+    surface.blit(agedeath_text, (x_pos, y_pos + line_height * 6))
 class Box:
     def __init__(self, x, y, width, height, colour):
         self.rect = pygame.Rect(x, y, width, height)
