@@ -74,13 +74,21 @@ class Button:
             return True
         return False
 
+class Box:
+    def __init__(self, x, y, width, height, colour):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.colour = colour
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.colour, self.rect, width=10)
 
 
 def get_averages(slimes,surface,font):
     count = len(slimes)
 
+    #when no slimes
     if count == 0:
-        # If no slimes, just show count 0 to avoid divide by zero errors
+
         text = font.render("Population: 0", True, (255, 255, 255))
         surface.blit(text, (10, 10))
         return
@@ -91,16 +99,18 @@ def get_averages(slimes,surface,font):
     total_sight = 0
     total_metabolism = 0
     total_age = 0
+    total_lifespan = 0
 
     # Sum up attributes
     for slime_data in slimes:
-        # Remember slime_data is [slime_object, timer], so we access slime_data[0]
+
         s = slime_data[0]
         total_speed += s.speed
         total_size += s.size
         total_sight += s.sight
         total_metabolism += s.metabolism
         total_age += s.age
+        total_lifespan += s.lifespan
 
     # Calculate averages
     avg_speed = total_speed / count
@@ -108,14 +118,14 @@ def get_averages(slimes,surface,font):
     avg_sight = round(total_sight / count, 2)
     avg_meta = round(total_metabolism / count, 2)
     avg_age = round(total_age / count, 2)
+    avg_lifespan = round(total_lifespan / count, 2)
+    return count, avg_speed, avg_size, avg_sight, avg_meta, avg_age, avg_lifespan
 
-    return count, avg_speed, avg_size, avg_sight, avg_meta, avg_age
 
 
-
-def draw_stats(surface, font, slimes, start_stats, total_death_from_age):
-    s_count, s_speed, s_size, s_sight, s_metabolism, s_age = start_stats
-    count, avg_speed, avg_size, avg_sight, avg_meta, avg_age = get_averages(slimes,surface,font)
+def draw_stats(surface, font, slimes, start_stats, total_death_from_age, total_starvations):
+    s_count, s_speed, s_size, s_sight, s_metabolism, s_age, s_lifespan = start_stats
+    count, avg_speed, avg_size, avg_sight, avg_meta, avg_age, avg_lifespan = get_averages(slimes,surface,font)
     # Create text surfaces
     # render(Text, Antialias, Color)
     pop_text = font.render(f"Population: {count}, Start: {s_count}", True, (255, 255, 255))
@@ -124,7 +134,9 @@ def draw_stats(surface, font, slimes, start_stats, total_death_from_age):
     sight_text = font.render(f"Avg Sight: {avg_sight}, Start: {s_sight}", True, (255, 255, 255))
     meta_text = font.render(f"Avg Metabolism: {avg_meta}, Start: {s_metabolism}", True, (255, 255, 255))
     age_text = font.render(f"Avg age: {avg_age}, Start: {s_age}", True, (255, 255, 255))
-    agedeath_text = font.render(f"slimes Dead from age: {total_death_from_age} slimes", True, (255, 255, 255))
+    life_text = font.render(f"Avg lifespan: {avg_lifespan}, Start:{s_lifespan}", True, (255, 255, 255))
+    agedeath_text = font.render(f"Slimes dead from age: {total_death_from_age} slimes", True, (255, 255, 255))
+    starvedeath_text = font.render(f"Slimes dead from starvation: {total_starvations} slimes", True, (255, 255, 255))
     # Blit (draw) them to the screen
     x_pos = 10
     y_pos = 10
@@ -136,11 +148,6 @@ def draw_stats(surface, font, slimes, start_stats, total_death_from_age):
     surface.blit(sight_text, (x_pos, y_pos + line_height * 3))
     surface.blit(meta_text, (x_pos, y_pos + line_height * 4))
     surface.blit(age_text, (x_pos, y_pos + line_height * 5))
-    surface.blit(agedeath_text, (x_pos, y_pos + line_height * 6))
-class Box:
-    def __init__(self, x, y, width, height, colour):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.colour = colour
-
-    def draw(self, screen):
-        pygame.draw.rect(screen, self.colour, self.rect, width=10)
+    surface.blit(life_text, (x_pos, y_pos + line_height * 6))
+    surface.blit(agedeath_text, (x_pos, y_pos + line_height * 7))
+    surface.blit(starvedeath_text, (x_pos, y_pos + line_height * 8))

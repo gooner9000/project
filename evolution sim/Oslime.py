@@ -140,9 +140,9 @@ class Slime:
     def lose_hunger(self,count):
         count += 1
         if count >= self.metabolism - self.speed*100 - self.sight/2:
-            self.dead = self.diehunger()
             self.current_hunger -= 1
-            #print(f"current hunger: {self.current_hunger}")
+            if self.diehunger():
+                self.dead = True
             count = 0
         return count
 

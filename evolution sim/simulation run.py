@@ -1,4 +1,4 @@
-#https://stackoverflow.com/questions/21565994/method-to-return-the-equation-of-a-straight-line-given-two-points
+
 
 #imports
 import random
@@ -215,19 +215,19 @@ while running:
 
         #set starting parameters
         starting_parameters = start_simulation(berries_num,slime_num,start_size)
-
-
-
         start_avgs = starting_parameters[0]
         slimes_list = starting_parameters[1]
         berry_list = starting_parameters[2]
         total_deaths_from_age = 0
+        total_starvations = 0
+
         #reset graphs
         timer = 0
         sec_timer = 0
         time_plot = []
         population_plot = []
         metabolism_plot = []
+
     # 2. Update game state
     elif game_state == "GAME":
         slimes_to_remove = []  # Create an empty list to hold dead slimes
@@ -239,10 +239,15 @@ while running:
             partner = slime[0].move(slimes_list)
             slime[0].eat()
             slime[0].move(slimes_list)
-            slime[1] = slime[0].lose_hunger(slime[1])
+            slime[1] = slime[0].lose_hunger(slime[1])  # remove hunger
+            #check cause of death
+
+            if slime[0].diehunger():
+                total_starvations += 1
+
             if slime[0].reducelifespan():
                 total_deaths_from_age += 1
-                print(f"total deaths from age = {total_deaths_from_age}")
+
 
 
             if partner is not None:
@@ -251,6 +256,7 @@ while running:
                     partner.Can_copy = False
                     for i in range(1,random.randint(1,4)):
                         new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
+
                         new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
                                               max_hunger=new_slime_attributes[1],
                                               metabolism=new_slime_attributes[2],
@@ -293,7 +299,7 @@ while running:
         back_button.draw(screen)
         simulation_box.draw(screen)
         if slimes_list != []:
-            ui.draw_stats(screen, stat_font, slimes_list, start_avgs, total_deaths_from_age)
+            ui.draw_stats(screen, stat_font, slimes_list, start_avgs, total_deaths_from_age, total_starvations)
 
 
 
