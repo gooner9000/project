@@ -128,6 +128,7 @@ size_slider = ui.Slider(centre_x - 100, 150, 200, 20, 1, 20, 5, "size", pygame.C
 nslimes_slider = ui.Slider(centre_x - 100, 200, 200, 20, 1, 50, 5, "num of slimes", pygame.Color("#F0F2D5"))
 nberries_slider = ui.Slider(centre_x - 100, 250, 200, 20, 10, 200, 80, "num of berries", pygame.Color("#F0F2D5"))
 mutation_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 0.9, 0.2, "variation of mutations", pygame.Color("#F0F2D5"))
+speed_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 0.9, 0.2, "speed_val", pygame.Color("#F0F2D5"))
 back_button = ui.Button(centre_x - 850, 900, 100, 50, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
 
 def start_simulation(berry_num,slime_num,slime_size):
