@@ -44,7 +44,7 @@ class Slider:
         pygame.draw.rect(screen, (self.colour), handle_rect)
 
         # Draw the text label
-        if self.name == "variation of mutations":
+        if self.name == "variation of mutations" or self.name == "movement speed":
             label = font.render(f"{self.name}: {float(self.val):.2f}", True, (self.colour))
         else:
             label = font.render(f"{self.name}: {int(self.val)}", True, (self.colour))

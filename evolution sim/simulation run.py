@@ -128,15 +128,15 @@ size_slider = ui.Slider(centre_x - 100, 150, 200, 20, 1, 20, 5, "size", pygame.C
 nslimes_slider = ui.Slider(centre_x - 100, 200, 200, 20, 1, 50, 5, "num of slimes", pygame.Color("#F0F2D5"))
 nberries_slider = ui.Slider(centre_x - 100, 250, 200, 20, 10, 200, 80, "num of berries", pygame.Color("#F0F2D5"))
 mutation_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 0.9, 0.2, "variation of mutations", pygame.Color("#F0F2D5"))
-speed_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 0.9, 0.2, "speed_val", pygame.Color("#F0F2D5"))
+stspeed_slider = ui.Slider(centre_x - 100, 350, 200, 20, 0.1, 0.9, 0.2, "movement speed", pygame.Color("#F0F2D5"))
 back_button = ui.Button(centre_x - 850, 900, 100, 50, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
 
-def start_simulation(berry_num,slime_num,slime_size):
+def start_simulation(berry_num,slime_num,slime_size,start_speed):
     slimes_list.clear()
     berry_list.clear()
 
     for i in range(berry_num):
-        Aberry = [berry.Berry(regen_time=500,
+        Aberry = [berry.Berry(regen_time=random.randint(400,800),
                               available=True,
                               size=3,
                               cx=random.randint(start_size,berry.screen_widthB-start_size),
@@ -146,7 +146,7 @@ def start_simulation(berry_num,slime_num,slime_size):
 
 
     for i in range(slime_num):
-        my_slime = [Oslime.Slime(speed=0.2343,
+        my_slime = [Oslime.Slime(speed=start_speed,
                                  max_hunger=10,
                                  current_hunger=10,
                                  colour=(0,150,50),
@@ -211,11 +211,15 @@ while running:
         mutation_slider.draw(screen,stat_font)
         mutation_value = float(mutation_slider.val)
 
+        #starting speed settings
+        stspeed_slider.handle_event(event)
+        stspeed_slider.draw(screen,stat_font)
+        start_speed = float(stspeed_slider.val)
         #back button
         back_button.draw(screen)
 
         #set starting parameters
-        starting_parameters = start_simulation(berries_num,slime_num,start_size)
+        starting_parameters = start_simulation(berries_num,slime_num,start_size,start_speed)
         start_avgs = starting_parameters[0]
         slimes_list = starting_parameters[1]
         berry_list = starting_parameters[2]
