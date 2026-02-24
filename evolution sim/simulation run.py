@@ -46,9 +46,9 @@ def calculate_mutation(slime1, slime2, attribute_name):
 
     # Calculate the mutation range based on those values
     combined_val = val1 + val2
-    lower_bound = round(-1 * mutation_value * combined_val/2)
-    upper_bound = round(mutation_value * combined_val / 2)
-    sigma = round(mutation_value * combined_val / 2)
+    lower_bound = (-1 * mutation_value * combined_val/2)
+    upper_bound = (mutation_value * combined_val / 2)
+    sigma = (mutation_value * combined_val / 2)
 
     mutation_delta = random.gauss(0, sigma)
 
@@ -149,9 +149,9 @@ def start_simulation(berry_num,slime_num,slime_size,start_speed):
         my_slime = [Oslime.Slime(speed=start_speed,
                                  max_hunger=10,
                                  current_hunger=10,
-                                 colour=(0,150,50),
+                                 colour=(50,150,50),
                                  size=slime_size,
-                                 sight=50,
+                                 sight=80,
                                  metabolism=180,
                                  aggression=1,
                                  cx=random.randint(start_size,Oslime.screen_widthS-start_size),
@@ -259,10 +259,10 @@ while running:
                 if slime[0].Can_copy and partner.Can_copy:
                     slime[0].Can_copy = False
                     partner.Can_copy = False
+                    #determine how many babies
+                    energy = (slime[0].current_hunger + partner.current_hunger)/11
                     lower_bound = 1
-
-                    sigma = 1
-
+                    sigma = energy
                     num_of_babies = round(random.gauss(1, sigma))
 
                     if num_of_babies < lower_bound:

@@ -113,7 +113,7 @@ def get_averages(slimes,surface,font):
         total_lifespan += s.lifespan
 
     # Calculate averages
-    avg_speed = total_speed / count
+    avg_speed = round(total_speed / count, 4)
     avg_size = round(total_size / count, 2)
     avg_sight = round(total_sight / count, 2)
     avg_meta = round(total_metabolism / count, 2)
