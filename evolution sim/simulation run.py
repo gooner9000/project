@@ -152,7 +152,7 @@ def start_simulation(berry_num,slime_num,slime_size,start_speed):
                                  colour=(0,150,50),
                                  size=slime_size,
                                  sight=50,
-                                 metabolism=200,
+                                 metabolism=180,
                                  aggression=1,
                                  cx=random.randint(start_size,Oslime.screen_widthS-start_size),
                                  cy=random.randint(start_size,Oslime.screen_heightS-start_size),
@@ -259,7 +259,16 @@ while running:
                 if slime[0].Can_copy and partner.Can_copy:
                     slime[0].Can_copy = False
                     partner.Can_copy = False
-                    for i in range(1,random.randint(1,4)):
+                    lower_bound = 1
+
+                    sigma = 1
+
+                    num_of_babies = round(random.gauss(1, sigma))
+
+                    if num_of_babies < lower_bound:
+                        num_of_babies = lower_bound
+
+                    for i in range(num_of_babies):
                         new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
 
                         new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
