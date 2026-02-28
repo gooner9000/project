@@ -108,7 +108,7 @@ def get_averages(slimes,surface,font):
         total_speed += s.speed
         total_size += s.size
         total_sight += s.sight
-        total_metabolism += s.metabolism
+        total_metabolism += s.actual_metabolism
         total_age += s.age
         total_lifespan += s.lifespan
 
@@ -138,7 +138,7 @@ def draw_stats(surface, font, slimes, start_stats, total_death_from_age, total_s
     agedeath_text = font.render(f"Slimes dead from age: {total_death_from_age} slimes", True, (255, 255, 255))
     starvedeath_text = font.render(f"Slimes dead from starvation: {total_starvations} slimes", True, (255, 255, 255))
     # Blit (draw) them to the screen
-    x_pos = 10
+    x_pos = 1380
     y_pos = 10
     line_height = 20
 

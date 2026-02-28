@@ -2,6 +2,9 @@
 
 #imports
 import random
+
+from pygame import K_SPACE
+
 import Oslime
 import pygame
 import math
@@ -81,7 +84,9 @@ def calculate_colour(slime1,slime2):
 
 def Create_new_slime(slime1,slime2,berry_list):
 
-    size = round(round((slime1.size + slime2.size) / 2) + calculate_mutation(slime1, slime2, 'size'))
+    size = (slime1.size + slime2.size) / 2 + calculate_mutation(slime1, slime2, 'size')
+    if size < 1:
+        size = 1
     speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
     sight = (slime1.sight + slime2.sight) / 2 + calculate_mutation(slime1, slime2, 'sight')
     max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger')
@@ -121,15 +126,37 @@ settings_btn = ui.Button(centre_x - 400, 400, 800, 200, "settings", pygame.Color
 exit_btn = ui.Button(centre_x - 400, 650, 800, 200, "exit", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
 
 #game
-speed_slider = ui.Slider(20, 800, 200, 20, 10, 200, 60, "speed", pygame.Color("#F0F2D5"))
+speed_slider = ui.Slider(1390, 700, 200, 20, 10, 200, 60, "speed", pygame.Color("#F0F2D5"))
 simulation_box = ui.Box(0,0,1360,980,pygame.Color("#EF233C"))
+back_button_game = ui.Button(centre_x + 600, 800, 200, 80, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
+view_graph_button = ui.Button(centre_x + 600, 400, 200, 80, "view graphs", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
+
 #settings
 size_slider = ui.Slider(centre_x - 100, 150, 200, 20, 1, 20, 5, "size", pygame.Color("#F0F2D5"))
 nslimes_slider = ui.Slider(centre_x - 100, 200, 200, 20, 1, 50, 5, "num of slimes", pygame.Color("#F0F2D5"))
 nberries_slider = ui.Slider(centre_x - 100, 250, 200, 20, 10, 200, 80, "num of berries", pygame.Color("#F0F2D5"))
 mutation_slider = ui.Slider(centre_x - 100, 300, 200, 20, 0.1, 0.9, 0.2, "variation of mutations", pygame.Color("#F0F2D5"))
 stspeed_slider = ui.Slider(centre_x - 100, 350, 200, 20, 0.1, 0.9, 0.2, "movement speed", pygame.Color("#F0F2D5"))
-back_button = ui.Button(centre_x - 850, 900, 100, 50, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
+back_button_settings = ui.Button(centre_x - 100, 500, 200, 80, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
+
+#graphs
+back_button_graph = ui.Button(centre_x + 600, 800, 200, 80, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
+#initialize graphs
+pop_graph_image = None
+met_graph_image = None
+sight_graph_image = None
+speed_graph_image = None
+lifespan_graph_image = None
+size_graph_image = None
+population_plot = []
+metabolism_plot = []
+sight_plot = []
+speed_plot = []
+lifespan_plot = []
+size_plot = []
+timer = 0
+time_plot = []
+
 
 def start_simulation(berry_num,slime_num,slime_size,start_speed):
     slimes_list.clear()
@@ -152,7 +179,7 @@ def start_simulation(berry_num,slime_num,slime_size,start_speed):
                                  colour=(50,150,50),
                                  size=slime_size,
                                  sight=80,
-                                 metabolism=180,
+                                 metabolism=40,
                                  aggression=1,
                                  cx=random.randint(start_size,Oslime.screen_widthS-start_size),
                                  cy=random.randint(start_size,Oslime.screen_heightS-start_size),
@@ -168,8 +195,8 @@ def start_simulation(berry_num,slime_num,slime_size,start_speed):
 #while the program is playing
 
 while running:
-    # 1. Event handling
-
+    # Event handling
+    # changing game states
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -182,9 +209,15 @@ while running:
             elif exit_btn.isclicked(event):
                 running = False
         if game_state == "SETTINGS" or game_state == "GAME":
-            if back_button.isclicked(event):
+            if back_button_settings.isclicked(event) or back_button_game.isclicked(event):
                 game_state = "MENU"
-    screen.fill((0, 0, 0))
+        if game_state == "GAME":
+            if view_graph_button.isclicked(event):
+                game_state = "GRAPHS"
+        if game_state == "GRAPHS":
+            if back_button_graph.isclicked(event):
+                game_state = "GAME"
+    screen.fill((10, 10, 10))
 
     if game_state == "MENU":
         start_btn.draw(screen)
@@ -216,7 +249,7 @@ while running:
         stspeed_slider.draw(screen,stat_font)
         start_speed = float(stspeed_slider.val)
         #back button
-        back_button.draw(screen)
+        back_button_settings.draw(screen)
 
         #set starting parameters
         starting_parameters = start_simulation(berries_num,slime_num,start_size,start_speed)
@@ -228,14 +261,26 @@ while running:
 
         #reset graphs
         timer = 0
-        sec_timer = 0
         time_plot = []
         population_plot = []
         metabolism_plot = []
+        speed_plot = []
+        sight_plot = []
+        lifespan_plot = []
+        size_plot = []
+        pop_graph_image = None
+        met_graph_image = None
+        speed_graph_image = None
+        sight_graph_image = None
+        lifespan_graph_image = None
+        size_graph_image = None
 
     # 2. Update game state
     elif game_state == "GAME":
         slimes_to_remove = []  # Create an empty list to hold dead slimes
+
+        #check user input
+        keys = pygame.key.get_pressed()
 
         for slime in slimes_list:
 
@@ -309,38 +354,73 @@ while running:
         for slime_data in slimes_list:
             slime_data[0].create()
 
+        #draw buttons
         speed_slider.draw(screen,stat_font)
-        back_button.draw(screen)
+        back_button_game.draw(screen)
         simulation_box.draw(screen)
+        view_graph_button.draw(screen)
+
         if slimes_list != []:
             ui.draw_stats(screen, stat_font, slimes_list, start_avgs, total_deaths_from_age, total_starvations)
 
+        #update graphs
 
-
-
-        #print graphs
-        """
-        if timer%60 == 0:#makes it so only creates a graph every 60 frames
-            sec_timer += 1
-            plotting.plot(time_plot, population_plot, "time/s", "population")
-            plotting.plot(time_plot, metabolism_plot, "time/s", "metabolism")
-            # load the image
-            pop_graph_image = pygame.image.load('populationplot.png')
-            pop_graph_image = pygame.transform.scale(pop_graph_image, (400, 300))
-
-            met_graph_image = pygame.image.load('metabolismplot.png')
-            met_graph_image = pygame.transform.scale(met_graph_image, (400, 300))
-
-
-        population_plot.append(len(slimes_list))
         if slimes_list != []:
-            metabolism_plot.append(ui.get_averages(slimes_list,screen,stat_font)[4])
-        time_plot.append(sec_timer)
+            avgs = ui.get_averages(slimes_list, screen, stat_font)
+            metabolism_plot.append(avgs[4])
+            speed_plot.append(avgs[1])
+            sight_plot.append(avgs[3])
+            lifespan_plot.append(avgs[6])
+            size_plot.append(avgs[2])
+            population_plot.append(len(slimes_list))
+        #if no slimes alive all stats are zero
+        else:
+            metabolism_plot.append(0)
+            speed_plot.append(0)
+            sight_plot.append(0)
+            lifespan_plot.append(0)
+            size_plot.append(0)
+            population_plot.append(0)
+        time_plot.append(timer)
         timer += 1
+
+
+    #graph state
+    if game_state == "GRAPHS":
+
+
+        plotting.plot(time_plot, population_plot, "frames", "population")
+        plotting.plot(time_plot, metabolism_plot, "frames", "metabolism")
+        plotting.plot(time_plot, speed_plot, "frames", "movement speed")
+        plotting.plot(time_plot, sight_plot, "frames", "sight")
+        plotting.plot(time_plot, lifespan_plot, "frames", "lifespan")
+        plotting.plot(time_plot, size_plot, "frames", "size")
+        # load the image
+        pop_graph_image = pygame.image.load('populationplot.png').convert_alpha()
+        pop_graph_image = pygame.transform.smoothscale(pop_graph_image, (400, 300))
+        met_graph_image = pygame.image.load('metabolismplot.png').convert_alpha()
+        met_graph_image = pygame.transform.smoothscale(met_graph_image, (400, 300))
+        speed_graph_image = pygame.image.load('movement speedplot.png').convert_alpha()
+        speed_graph_image = pygame.transform.smoothscale(speed_graph_image, (400, 300))
+        sight_graph_image = pygame.image.load('sightplot.png').convert_alpha()
+        sight_graph_image = pygame.transform.smoothscale(sight_graph_image, (400, 300))
+        lifespan_graph_image = pygame.image.load('lifespanplot.png').convert_alpha()
+        lifespan_graph_image = pygame.transform.smoothscale(lifespan_graph_image, (400, 300))
+        size_graph_image = pygame.image.load('sizeplot.png').convert_alpha()
+        size_graph_image = pygame.transform.smoothscale(size_graph_image, (400, 300))
+
+
         #display the graph
-        screen.blit(pop_graph_image, (1380, 0))
-        screen.blit(met_graph_image, (1380, 300))
-        """
+        if 'pop_graph_image' in locals() and pop_graph_image != None:
+            screen.blit(pop_graph_image, (0, 0))
+            screen.blit(met_graph_image, (400, 0))
+            screen.blit(speed_graph_image, (800, 0))
+            screen.blit(sight_graph_image, (1200, 0))
+            screen.blit(lifespan_graph_image, (400, 300))
+            screen.blit(size_graph_image, (0, 300))
+
+        back_button_graph.draw(screen)
+
     # 5. Update the display
     pygame.display.flip()
 

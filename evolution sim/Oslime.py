@@ -45,6 +45,7 @@ class Slime:
         self.posX,self.posY = self.selectlocation([])
         self.lifespan = lifespan
         self.age = 0
+        self.actual_metabolism = self.metabolism / self.speed
 
     def reducelifespan(self):
         self.age += 1
@@ -58,7 +59,7 @@ class Slime:
 
         pygame.draw.circle(screenS, self.colour, (self.cx, self.cy), self.size)
         #visiulize where its going to go
-        #pygame.draw.line(screen, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
+        #pygame.draw.line(screenS, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
         #visualize sight
         #pygame.draw.circle(screen, self.colour, (self.cx, self.cy), self.sight, 1)
     def Ishungry(self):
@@ -96,37 +97,45 @@ class Slime:
     def selectlocation(self,slimes):
         hungry = self.Ishungry()
         repro_able = self.Canreproduce()
-        locationX = random.randint(self.size, screen_widthS - self.size)
-        locationY = random.randint(self.size, screen_heightS - self.size)
+
         if not hungry and not repro_able:
-            #print('not hungry')
-            #print('cant reproduce')
+            #hang around locally
+            locationX = self.cx + random.randint(round(-self.sight), round(self.sight))
+            locationY = self.cy + random.randint(round(-self.sight), round(self.sight))
             return locationX, locationY
+
         elif hungry:
-            #print('hungry')
             #enter look for food state
             for berry in self.berries:
+                #if they find a berry choose that location
                 if self.Checkforberry(berry) == True:
                     locationX = berry[0].cx
                     locationY = berry[0].cy
-                    #print('going towards berry')
-                    break
+                    return locationX, locationY
+            #if no berries around them go searching in random direction
+            locationX = random.randint(int(self.size), screen_widthS - int(self.size))
+            locationY = random.randint(int(self.size), screen_heightS - int(self.size))
+            return locationX, locationY
+
         elif repro_able:
-            #print('can reproduce')
             #enter look for slime state
             for slime in slimes:
+                #if they find a slime
                 if self.Checkforslime(slime) == True and slime[0].Canreproduce():
                     locationX = slime[0].cx
                     locationY = slime[0].cy
                     #print('going towards slime')
                     if check_collision(self.cx,self.cy,slime[0].cx,slime[0].cy):
                         self.Reproduce(slime[0])
-                    break
+                    return locationX, locationY
+            #if no slime found go searching in random direction
+            locationX = random.randint(int(self.size), screen_widthS - int(self.size))
+            locationY = random.randint(int(self.size), screen_heightS - int(self.size))
+            return locationX, locationY
 
 
 
 
-        return locationX,locationY
 
 
     def diehunger(self):
@@ -139,7 +148,7 @@ class Slime:
 
     def lose_hunger(self,count):
         count += 1
-        if count >= self.metabolism - self.speed*100 - self.sight/2:
+        if count >= self.actual_metabolism:
             self.current_hunger -= 1
             if self.diehunger():
                 self.dead = True
