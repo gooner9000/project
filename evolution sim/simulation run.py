@@ -2,6 +2,7 @@
 
 #imports
 import random
+from bdb import effective
 
 from pygame import K_SPACE
 
@@ -90,7 +91,7 @@ def Create_new_slime(slime1,slime2,berry_list):
     speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
     sight = (slime1.sight + slime2.sight) / 2 + calculate_mutation(slime1, slime2, 'sight')
     max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger')
-    metabolism = (slime1.metabolism + slime2.metabolism)/2 + calculate_mutation(slime1,slime2,'metabolism')
+    energy_efficiency = (slime1.energy_efficiency + slime2.energy_efficiency) / 2 + calculate_mutation(slime1, slime2, 'energy_efficiency')
     current_hunger = max_hunger*0.6
     colour = calculate_colour(slime1,slime2)
     aggression = (slime1.aggression + slime2.aggression)/2 + calculate_mutation(slime1,slime2,'aggression')
@@ -100,7 +101,7 @@ def Create_new_slime(slime1,slime2,berry_list):
     dead = False
     berries = berry_list
 
-    return speed,max_hunger,metabolism,current_hunger,colour,size,aggression,sight,cx,cy,dead,berries,lifespan
+    return speed,max_hunger,energy_efficiency,current_hunger,colour,size,aggression,sight,cx,cy,dead,berries,lifespan
 
 #set screen size
 
@@ -143,13 +144,13 @@ back_button_settings = ui.Button(centre_x - 100, 500, 200, 80, "back", pygame.Co
 back_button_graph = ui.Button(centre_x + 600, 800, 200, 80, "back", pygame.Color("#97051D"), pygame.Color("#EF233C"), stat_font)
 #initialize graphs
 pop_graph_image = None
-met_graph_image = None
+eff_graph_image = None
 sight_graph_image = None
 speed_graph_image = None
 lifespan_graph_image = None
 size_graph_image = None
 population_plot = []
-metabolism_plot = []
+energy_efficiency_plot = []
 sight_plot = []
 speed_plot = []
 lifespan_plot = []
@@ -179,7 +180,7 @@ def start_simulation(berry_num,slime_num,slime_size,start_speed):
                                  colour=(50,150,50),
                                  size=slime_size,
                                  sight=80,
-                                 metabolism=40,
+                                 energy_efficiency=40,
                                  aggression=1,
                                  cx=random.randint(start_size,Oslime.screen_widthS-start_size),
                                  cy=random.randint(start_size,Oslime.screen_heightS-start_size),
@@ -263,13 +264,13 @@ while running:
         timer = 0
         time_plot = []
         population_plot = []
-        metabolism_plot = []
+        energy_efficiency_plot = []
         speed_plot = []
         sight_plot = []
         lifespan_plot = []
         size_plot = []
         pop_graph_image = None
-        met_graph_image = None
+        eff_graph_image = None
         speed_graph_image = None
         sight_graph_image = None
         lifespan_graph_image = None
@@ -317,18 +318,18 @@ while running:
                         new_slime_attributes = Create_new_slime(slime[0],partner,berry_list)
 
                         new_slime = [Oslime.Slime(speed=new_slime_attributes[0],
-                                              max_hunger=new_slime_attributes[1],
-                                              metabolism=new_slime_attributes[2],
-                                              current_hunger=new_slime_attributes[3],
-                                              colour=new_slime_attributes[4],
-                                              size=new_slime_attributes[5],
-                                              sight=new_slime_attributes[7],
-                                              aggression=new_slime_attributes[6],
-                                              cx=new_slime_attributes[8],
-                                              cy=new_slime_attributes[9],
-                                              dead=new_slime_attributes[10],
-                                              berries=new_slime_attributes[11],
-                                              lifespan = new_slime_attributes[12])
+                                                  max_hunger=new_slime_attributes[1],
+                                                  energy_efficiency=new_slime_attributes[2],
+                                                  current_hunger=new_slime_attributes[3],
+                                                  colour=new_slime_attributes[4],
+                                                  size=new_slime_attributes[5],
+                                                  sight=new_slime_attributes[7],
+                                                  aggression=new_slime_attributes[6],
+                                                  cx=new_slime_attributes[8],
+                                                  cy=new_slime_attributes[9],
+                                                  dead=new_slime_attributes[10],
+                                                  berries=new_slime_attributes[11],
+                                                  lifespan = new_slime_attributes[12])
                         , 0]
                         slimes_list.append(new_slime)
                     slime[0].current_hunger = slime[0].current_hunger * 0.6
@@ -367,7 +368,7 @@ while running:
 
         if slimes_list != []:
             avgs = ui.get_averages(slimes_list, screen, stat_font)
-            metabolism_plot.append(avgs[4])
+            energy_efficiency_plot.append(avgs[4])
             speed_plot.append(avgs[1])
             sight_plot.append(avgs[3])
             lifespan_plot.append(avgs[6])
@@ -375,7 +376,7 @@ while running:
             population_plot.append(len(slimes_list))
         #if no slimes alive all stats are zero
         else:
-            metabolism_plot.append(0)
+            energy_efficiency_plot.append(0)
             speed_plot.append(0)
             sight_plot.append(0)
             lifespan_plot.append(0)
@@ -390,7 +391,7 @@ while running:
 
 
         plotting.plot(time_plot, population_plot, "frames", "population")
-        plotting.plot(time_plot, metabolism_plot, "frames", "metabolism")
+        plotting.plot(time_plot, energy_efficiency_plot, "frames", "energy efficiency")
         plotting.plot(time_plot, speed_plot, "frames", "movement speed")
         plotting.plot(time_plot, sight_plot, "frames", "sight")
         plotting.plot(time_plot, lifespan_plot, "frames", "lifespan")
@@ -398,8 +399,8 @@ while running:
         # load the image
         pop_graph_image = pygame.image.load('populationplot.png').convert_alpha()
         pop_graph_image = pygame.transform.smoothscale(pop_graph_image, (400, 300))
-        met_graph_image = pygame.image.load('metabolismplot.png').convert_alpha()
-        met_graph_image = pygame.transform.smoothscale(met_graph_image, (400, 300))
+        eff_graph_image = pygame.image.load('energy efficiencyplot.png').convert_alpha()
+        eff_graph_image = pygame.transform.smoothscale(eff_graph_image, (400, 300))
         speed_graph_image = pygame.image.load('movement speedplot.png').convert_alpha()
         speed_graph_image = pygame.transform.smoothscale(speed_graph_image, (400, 300))
         sight_graph_image = pygame.image.load('sightplot.png').convert_alpha()
@@ -413,7 +414,7 @@ while running:
         #display the graph
         if 'pop_graph_image' in locals() and pop_graph_image != None:
             screen.blit(pop_graph_image, (0, 0))
-            screen.blit(met_graph_image, (400, 0))
+            screen.blit(eff_graph_image, (400, 0))
             screen.blit(speed_graph_image, (800, 0))
             screen.blit(sight_graph_image, (1200, 0))
             screen.blit(lifespan_graph_image, (400, 300))

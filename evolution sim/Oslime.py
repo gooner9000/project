@@ -18,7 +18,7 @@ class Slime:
     def __init__(self,
                  speed,
                  max_hunger,
-                 metabolism,
+                 energy_efficiency,
                  current_hunger,
                  colour,
                  size,
@@ -34,7 +34,7 @@ class Slime:
         self.Can_copy = False
         self.speed = speed
         self.max_hunger = max_hunger
-        self.metabolism = metabolism
+        self.energy_efficiency = energy_efficiency
         self.current_hunger = current_hunger
         self.colour = colour
         self.size = size
@@ -45,7 +45,7 @@ class Slime:
         self.posX,self.posY = self.selectlocation([])
         self.lifespan = lifespan
         self.age = 0
-        self.actual_metabolism = self.metabolism / self.speed
+        self.actual_energy_efficiency = self.energy_efficiency / self.speed
 
     def reducelifespan(self):
         self.age += 1
@@ -148,7 +148,7 @@ class Slime:
 
     def lose_hunger(self,count):
         count += 1
-        if count >= self.actual_metabolism:
+        if count >= self.actual_energy_efficiency:
             self.current_hunger -= 1
             if self.diehunger():
                 self.dead = True
