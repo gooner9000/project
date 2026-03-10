@@ -94,14 +94,13 @@ def Create_new_slime(slime1,slime2,berry_list):
     energy_efficiency = (slime1.energy_efficiency + slime2.energy_efficiency) / 2 + calculate_mutation(slime1, slime2, 'energy_efficiency')
     current_hunger = max_hunger*0.6
     colour = calculate_colour(slime1,slime2)
-    aggression = (slime1.aggression + slime2.aggression)/2 + calculate_mutation(slime1,slime2,'aggression')
     lifespan = (slime1.lifespan + slime2.lifespan)/2 + calculate_mutation(slime1,slime2,'lifespan')
     cx = (slime1.cx + slime2.cx)/2
     cy = (slime1.cy + slime2.cy)/2
     dead = False
     berries = berry_list
 
-    return speed,max_hunger,energy_efficiency,current_hunger,colour,size,aggression,sight,cx,cy,dead,berries,lifespan
+    return speed,max_hunger,energy_efficiency,current_hunger,colour,size,sight,cx,cy,dead,berries,lifespan
 
 #set screen size
 
@@ -181,7 +180,6 @@ def start_simulation(berry_num,slime_num,slime_size,start_speed):
                                  size=slime_size,
                                  sight=80,
                                  energy_efficiency=40,
-                                 aggression=1,
                                  cx=random.randint(start_size,Oslime.screen_widthS-start_size),
                                  cy=random.randint(start_size,Oslime.screen_heightS-start_size),
                                  dead=False,
@@ -323,13 +321,12 @@ while running:
                                                   current_hunger=new_slime_attributes[3],
                                                   colour=new_slime_attributes[4],
                                                   size=new_slime_attributes[5],
-                                                  sight=new_slime_attributes[7],
-                                                  aggression=new_slime_attributes[6],
-                                                  cx=new_slime_attributes[8],
-                                                  cy=new_slime_attributes[9],
-                                                  dead=new_slime_attributes[10],
-                                                  berries=new_slime_attributes[11],
-                                                  lifespan = new_slime_attributes[12])
+                                                  sight=new_slime_attributes[6],
+                                                  cx=new_slime_attributes[7],
+                                                  cy=new_slime_attributes[8],
+                                                  dead=new_slime_attributes[9],
+                                                  berries=new_slime_attributes[10],
+                                                  lifespan = new_slime_attributes[11])
                         , 0]
                         slimes_list.append(new_slime)
                     slime[0].current_hunger = slime[0].current_hunger * 0.6

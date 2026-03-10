@@ -22,7 +22,6 @@ class Slime:
                  current_hunger,
                  colour,
                  size,
-                 aggression,
                  sight,
                  cx,
                  cy,
@@ -38,7 +37,6 @@ class Slime:
         self.current_hunger = current_hunger
         self.colour = colour
         self.size = size
-        self.aggression = aggression
         self.sight = sight
         self.cx = cx
         self.cy = cy
