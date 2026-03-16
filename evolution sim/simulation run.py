@@ -50,9 +50,10 @@ def calculate_mutation(slime1, slime2, attribute_name):
 
     # Calculate the mutation range based on those values
     combined_val = val1 + val2
-    lower_bound = (-1 * mutation_value * combined_val/2)
-    upper_bound = (mutation_value * combined_val / 2)
+
     sigma = (mutation_value * combined_val / 2)
+    lower_bound = sigma * -2
+    upper_bound = sigma * 2
 
     mutation_delta = random.gauss(0, sigma)
 
@@ -88,8 +89,12 @@ def Create_new_slime(slime1,slime2,berry_list):
     size = (slime1.size + slime2.size) / 2 + calculate_mutation(slime1, slime2, 'size')
     if size < 1:
         size = 1
+    if size > Oslime.screen_heightS/2:
+        size = Oslime.screen_heightS/2
     speed = (slime1.speed + slime2.speed)/2 + calculate_mutation(slime1,slime2,'speed')
     sight = (slime1.sight + slime2.sight) / 2 + calculate_mutation(slime1, slime2, 'sight')
+    if sight <= 0:
+        sight = 0
     max_hunger = round((slime1.max_hunger + slime2.max_hunger)/2) + calculate_mutation(slime1,slime2,'max_hunger')
     energy_efficiency = (slime1.energy_efficiency + slime2.energy_efficiency) / 2 + calculate_mutation(slime1, slime2, 'energy_efficiency')
     current_hunger = max_hunger*0.6
@@ -294,7 +299,7 @@ while running:
             if slime[0].diehunger():
                 total_starvations += 1
 
-            if slime[0].reducelifespan():
+            if slime[0].Increase_age():
                 total_deaths_from_age += 1
 
 
