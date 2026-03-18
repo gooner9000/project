@@ -12,11 +12,32 @@ def check_collision(x1,y1,x2,y2):
     if calculate_distance(x1,y1,x2,y2) <= 3:
         return True
     return False
+#sets the size of the screen that the slime can use
 screen_widthS = 1360
 screen_heightS = 980
 screenS = pygame.display.set_mode((screen_widthS, screen_heightS))
 
 class Slime:
+    """ description: class that creates and handles the slime object
+        attributes: dead: is true or false slime is removed from simulation of true
+                    berries: list of berries in the simulation
+                    Can_copy: indicates to other slimes if is able to reproduce or not
+                    speed:
+                    max_hunger: max amount of energy the slime can have
+                    energy_efficiency: set value of 40 that doesn't change, used to calculate the actual energy efficiency
+                    current_hunger: amount of energy the slime currently has
+                    colour: is three different 3 digit integers which make an RGB value
+                    size: the radius of the slime
+                    sight: the radius of the sight circle
+                    cx: slimes current x position
+                    cy: slimes current y position
+                    posX: x position of the point the slime is moving to
+                    posY: y position of the point the slime is moving to
+                    lifespan: the maximum age a slime can get to before dying
+                    age: how many frames a slime has been alive for
+                    actual_energy_efficiency: how many frames it takes for a slime to lose 1 energy
+                    """
+
     def __init__(self,
                  speed,
                  max_hunger,
