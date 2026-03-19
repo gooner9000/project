@@ -23,7 +23,7 @@ class Slime:
                     berries: list of berries in the simulation
                     Can_copy: indicates to other slimes if is able to reproduce or not
                     speed:
-                    max_hunger: max amount of energy the slime can have
+                    max_hunger: used to calculate actual_max_hunger
                     energy_efficiency: set value of 40 that doesn't change, used to calculate the actual energy efficiency
                     current_hunger: amount of energy the slime currently has
                     colour: is three different 3 digit integers which make an RGB value
@@ -36,6 +36,7 @@ class Slime:
                     lifespan: the maximum age a slime can get to before dying
                     age: how many frames a slime has been alive for
                     actual_energy_efficiency: how many frames it takes for a slime to lose 1 energy
+                    actual_max_hunger: max energy a slime can have
                     """
 
     def __init__(self,
@@ -63,13 +64,17 @@ class Slime:
         self.sight = sight
         self.cx = cx
         self.cy = cy
-        self.posX,self.posY = self.selectlocation([])
         self.lifespan = lifespan
         self.age = 0
         self.actual_energy_efficiency = self.energy_efficiency / self.speed
+        self.actual_max_hunger = self.max_hunger + round(self.size/2)
+        self.posX, self.posY = self.selectlocation([])
 
     def Increase_age(self):
+        """increments the age by one evertime it is called
+        also checks to see if the slime has died of old age"""
         self.age += 1
+        #check if slime has died of old age
         if self.age >= self.lifespan:
             self.dead = True
             return True
@@ -77,14 +82,13 @@ class Slime:
 
     #function to create slimes at start
     def create(self):
-
+        #draws the slime to the screen
         pygame.draw.circle(screenS, self.colour, (self.cx, self.cy), self.size)
-        #visiulize where its going to go
-        #pygame.draw.line(screenS, "white", (self.cx, self.cy), (self.posX, self.posY), 1)
-        #visualize sight
-        #pygame.draw.circle(screen, self.colour, (self.cx, self.cy), self.sight, 1)
+
     def Ishungry(self):
-        if self.current_hunger < (self.max_hunger + round(self.size/2)) * 0.5:
+        """compares current energy level to maximum energy level,
+        checks if current is less than 50% of the maximum"""
+        if self.current_hunger < self.actual_max_hunger * 0.5:
             return True
         else:
             return False
@@ -96,7 +100,7 @@ class Slime:
         partner = slime
         return partner
     def Canreproduce(self):
-        if self.current_hunger >= (self.max_hunger + round(self.size/2)) * 0.7:
+        if self.current_hunger >= self.actual_max_hunger * 0.7:
             #print("can reproduce")
             return True
         else:
@@ -252,8 +256,8 @@ class Slime:
                 if distance < self.size + berry[0].size:
                     self.current_hunger += 5
                     # Cap hunger at max_hunger
-                    if self.current_hunger > self.max_hunger + round(self.size/2):
-                        self.current_hunger = self.max_hunger + round(self.size/2)
+                    if self.current_hunger > self.actual_max_hunger:
+                        self.current_hunger = self.actual_max_hunger
                     berry[0].available = False  # The slime eats the berry
                     #print(f"Yum! Hunger is now {self.current_hunger}")
                     break  # Stop checking after eating one berry per frame
