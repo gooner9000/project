@@ -202,38 +202,41 @@ class Slime:
     def move(self, slimes):
         """updates the slimes position and handles logic for targeting food or mates
         interrupts current path if a priority target appears in sight"""
-        # check to interupt
+        # managing interupts
+        # check if slime is hungry
         if self.Ishungry():
             is_targeting_food = False
-            # check if already targeting food
+            # check if slime is already going towards a berry
             for berry in self.berries:
                 if berry[0].available and self.posX == berry[0].cx and self.posY == berry[0].cy:
                     is_targeting_food = True
                     break
-            # if not then target food
+            # if the slime is not already targeting a berry continuously check for a berry that it can target as it moves
             if not is_targeting_food:
                 for berry in self.berries:
                     if self.Checkforberry(berry):
-                        # print("interupted going towards berry")
+                        #interupt where slime is currently going and go towards berry
                         self.posX = berry[0].cx
                         self.posY = berry[0].cy
                         break
+        #check if slime can reproduce
         if self.Canreproduce():
             is_targeting_slime = False
             # check if already targeting slime
             for slime in slimes:
                 if self.posX == slime[0].cx and self.posY == slime[0].cy:
-                    # print("is already targeting")
-                    is_targeting_slime = True  # Fixed logic error in original code where this was set to is_targeting_food
+                    is_targeting_slime = True
+                    #if is already targeting a slime, check if close enough to reproduce
                     if check_collision(self.cx, self.cy, slime[0].cx, slime[0].cy):
+                        #if they are close enough trigger reproduction
                         partner = self.Reproduce(slime[0])
                         return partner
                     break
-            # if not then target slime
+            # if not targeting a slime already continuously check for a slime to target as it moves
             if not is_targeting_slime:
                 for slime in slimes:
                     if self.Checkforslime(slime) and slime[0].Canreproduce():
-                        # print("interupted going towards slime")
+                        #interupt where it is currently going and target slime
                         self.posX = slime[0].cx
                         self.posY = slime[0].cy
                         if check_collision(self.cx, self.cy, slime[0].cx, slime[0].cy):
@@ -246,7 +249,7 @@ class Slime:
         dy = self.posY - self.cy
         distance = math.sqrt(dx ** 2 + dy ** 2)
 
-        # If closer than one step, snap to target and pick new
+        # If closer than one step, snap to target and pick a new one
         if distance < self.speed:
             wait = True
             while wait == True:
@@ -257,7 +260,7 @@ class Slime:
             self.posX, self.posY = self.selectlocation(slimes)
 
         else:
-            # move the circle
+            # move the slime towards destination if it hasn't reached destination yet
             if distance != 0:
                 move_x = (dx / distance) * self.speed
                 move_y = (dy / distance) * self.speed
@@ -266,18 +269,17 @@ class Slime:
                 self.cy += move_y
 
     def eat(self):
-        """scans for nearby berries to consume and increases hunger points
-        caps hunger at the maximum limit and marks berry as unavailable"""
+        """checks if close enough to any berries to eat them
+        if it is close enough it eats the berry"""
         for berry in self.berries:
             # Check if the berry is available
             if berry[0].available:
                 distance = calculate_distance(self.cx, self.cy, berry[0].cx, berry[0].cy)
-                # If close enough to eat
+                # If berry and slime are touching eat the berry
                 if distance < self.size + berry[0].size:
                     self.current_hunger += 5
                     # Cap hunger at max_hunger
                     if self.current_hunger > self.actual_max_hunger:
                         self.current_hunger = self.actual_max_hunger
-                    berry[0].available = False  # The slime eats the berry
-                    # print(f"Yum! Hunger is now {self.current_hunger}")
-                    break  # Stop checking after eating one berry per frame
+                    berry[0].available = False  # berry that got eaten disappears
+                    break

@@ -163,6 +163,8 @@ timer = 0
 time_plot = []
 
 
+
+
 def start_simulation(berry_num,slime_num,slime_size,start_speed):
     slimes_list.clear()
     berry_list.clear()
