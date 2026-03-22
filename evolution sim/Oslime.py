@@ -24,6 +24,7 @@ screenS = pygame.display.set_mode((screen_widthS, screen_heightS))
 
 class Slime:
     """ description: class that creates and handles the slime object
+
         attributes: dead: is true or false slime is removed from simulation of true
                     berries: list of berries in the simulation
                     Can_copy: indicates to other slimes if is able to reproduce or not
